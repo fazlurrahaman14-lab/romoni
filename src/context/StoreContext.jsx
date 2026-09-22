@@ -4,7 +4,8 @@ import { PRODUCTS as INITIAL_PRODUCTS } from '../data/products';
 const StoreContext = createContext();
 
 const DEFAULT_COUPONS = [
-  { code: 'LEDIS10', discountPercent: 10, isActive: true, description: '10% off for new customers' },
+  { code: 'ROMONI10', discountPercent: 10, isActive: true, description: '10% off for new customers' },
+  { code: 'LEDIS10', discountPercent: 10, isActive: true, description: '10% off special promo' },
   { code: 'MUSHQ10', discountPercent: 10, isActive: true, description: '10% off luxury collection' },
   { code: 'EID20', discountPercent: 20, isActive: true, description: '20% off Eid Special' }
 ];
@@ -97,6 +98,79 @@ export const StoreProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0);
+
+  // Storewide Global Discount (%) State
+  const [storewideDiscountPercent, setStorewideDiscountPercentState] = useState(() => {
+    try {
+      const saved = localStorage.getItem('romoni_storewide_discount');
+      return saved ? Number(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  const applyStorewideDiscount = (percent) => {
+    const val = Math.max(0, Math.min(99, Number(percent) || 0));
+    setStorewideDiscountPercentState(val);
+    localStorage.setItem('romoni_storewide_discount', val.toString());
+    if (val > 0) {
+      showToast(`🔥 ${val}% Storewide Discount Applied to ALL Products!`);
+    } else {
+      showToast('Storewide discount cleared');
+    }
+  };
+
+  // Helper: Dynamic Price & Discount calculation for any product
+  const getProductPrices = (product) => {
+    if (!product) return { sellingPrice: 0, originalPrice: 0, discountPercent: 0, hasDiscount: false };
+    const baseOriginalPrice = Number(product.originalPriceBDT || product.originalPricePKR || product.priceBDT || product.pricePKR || 0);
+    const baseSellingPrice = Number(product.priceBDT || product.pricePKR || baseOriginalPrice);
+
+    if (storewideDiscountPercent > 0) {
+      const refPrice = baseOriginalPrice > baseSellingPrice ? baseOriginalPrice : baseSellingPrice;
+      const sellingPrice = Math.round(refPrice * (1 - storewideDiscountPercent / 100));
+      return {
+        sellingPrice,
+        originalPrice: refPrice,
+        discountPercent: storewideDiscountPercent,
+        hasDiscount: true
+      };
+    }
+
+    const hasDiscount = baseOriginalPrice > baseSellingPrice;
+    const discountPercent = hasDiscount ? Math.round(((baseOriginalPrice - baseSellingPrice) / baseOriginalPrice) * 100) : 0;
+    return {
+      sellingPrice: baseSellingPrice,
+      originalPrice: baseOriginalPrice,
+      discountPercent,
+      hasDiscount
+    };
+  };
+
+  // Subdomain & URL auto admin trigger (e.g., admin.domain.com, dashboard.domain.com, dashboad.domain.com, /admin, or ?admin=true)
+  useEffect(() => {
+    try {
+      const host = window.location.hostname;
+      const path = window.location.pathname;
+      const search = window.location.search;
+      if (
+        host.startsWith('admin.') ||
+        host.startsWith('dashboard.') ||
+        host.startsWith('dashboad.') ||
+        path.startsWith('/admin') ||
+        path.startsWith('/dashboard') ||
+        path.startsWith('/dashboad') ||
+        search.includes('admin=true') ||
+        window.location.hash === '#admin' ||
+        window.location.hash === '#dashboard' ||
+        window.location.hash === '#dashboad'
+      ) {
+        setIsAdminOpen(true);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   // Sync state with LocalStorage
   useEffect(() => {
@@ -297,11 +371,12 @@ export const StoreProvider = ({ children }) => {
     }
   };
 
-  // Calculations
-  const cartSubtotalPKR = cart.reduce(
-    (acc, item) => acc + (item.product.priceBDT || item.product.pricePKR || 0) * item.quantity,
-    0
-  );
+  // Calculations using getProductPrices
+  const cartSubtotalPKR = cart.reduce((acc, item) => {
+    const prices = getProductPrices(item.product);
+    return acc + prices.sellingPrice * item.quantity;
+  }, 0);
+
   const discountAmountPKR = Math.round(cartSubtotalPKR * appliedDiscount);
   const cartTotalPKR = Math.max(0, cartSubtotalPKR - discountAmountPKR);
   const freeShippingThresholdPKR = 5000; // ৳5000 BDT threshold
@@ -316,6 +391,9 @@ export const StoreProvider = ({ children }) => {
         updateProduct,
         deleteProduct,
         resetProductsToDefault,
+        storewideDiscountPercent,
+        applyStorewideDiscount,
+        getProductPrices,
         coupons,
         addCoupon,
         toggleCouponStatus,
