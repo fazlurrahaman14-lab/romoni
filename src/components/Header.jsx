@@ -40,7 +40,25 @@ export const Header = () => {
           </button>
 
           <a href="#" className="brand-logo-wrapper" onClick={() => setSelectedCategory('all')}>
-            <img src="/assets/logo.jpg" alt="Ledis Dress Logo" className="brand-logo-img" />
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'var(--color-primary-dark)',
+                border: '1.5px solid var(--color-gold)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--color-gold)',
+                fontFamily: 'var(--font-serif)',
+                fontWeight: 700,
+                fontSize: '1rem',
+                flexShrink: 0
+              }}
+            >
+              LD
+            </div>
             <div>
               <span className="brand-name">LEDIS DRESS</span>
               <span className="brand-subtext">ATELIER & COUTURE</span>

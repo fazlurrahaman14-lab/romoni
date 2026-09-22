@@ -5,27 +5,27 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 const HERO_SLIDES = [
   {
     id: 1,
-    title: 'Winter Vol-1 2025 Velvet Atelier',
+    title: 'Winter Velvet Series',
     subtitle: 'COUTURE & HEAVY EMBROIDERED VELVET',
     image: '/assets/products/hero_banner_winter_1790107081859.png',
     badge: 'LUXURY RELEASE',
-    categoryId: 'winter-2025'
+    categoryId: 'velvet-series'
   },
   {
     id: 2,
-    title: 'COCO Prints Vol 4 Pret Collection',
+    title: 'Ready To Wear Pret',
     subtitle: 'AUTHENTIC PRINTED & EMBROIDERED LAWN',
     image: '/assets/products/coco_prints_vol4_1790107095197.png',
     badge: 'NEW SEASON',
-    categoryId: 'coco-prints'
+    categoryId: 'luxury-pret'
   },
   {
     id: 3,
-    title: 'ETHNC Lawn 3-Piece Unstitched',
+    title: 'Unstitched Luxury Lawn',
     subtitle: 'ROYAL TILLA & EMBROIDERED NET DUPATTA',
     image: '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
     badge: 'TRENDING ATELIER',
-    categoryId: 'ethnic-lawn'
+    categoryId: 'unstitched-lawn'
   }
 ];
 
@@ -47,11 +47,11 @@ export const HeroBanner = () => {
       <div
         style={{
           position: 'relative',
-          minHeight: '78vh',
+          minHeight: '82vh',
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-end',
           justifyContent: 'center',
-          padding: '4rem 1rem 6rem'
+          padding: '2rem 1rem 4rem'
         }}
       >
         <img
@@ -65,9 +65,9 @@ export const HeroBanner = () => {
             height: '100%',
             objectFit: 'cover',
             objectPosition: 'center top',
-            opacity: 0.65,
-            transition: 'opacity 1s ease-in-out',
-            filter: 'brightness(0.85)'
+            opacity: 0.85,
+            transition: 'opacity 0.8s ease-in-out',
+            filter: 'contrast(1.05)'
           }}
         />
 
@@ -75,23 +75,18 @@ export const HeroBanner = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(15,18,16,0.4) 0%, rgba(15,18,16,0.85) 100%)'
+            background: 'linear-gradient(180deg, rgba(15,18,16,0.15) 0%, rgba(15,18,16,0.65) 75%, rgba(15,18,16,0.95) 100%)'
           }}
         />
 
         <div className="container" style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}>
           <div
             style={{
-              maxWidth: '680px',
+              maxWidth: '650px',
               margin: '0 auto',
-              background: 'rgba(20, 23, 21, 0.75)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              border: '1px solid rgba(207, 162, 75, 0.35)',
-              borderRadius: 'var(--radius-md)',
-              padding: '2.5rem 1.5rem',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-              color: '#ffffff'
+              padding: '1rem',
+              color: '#ffffff',
+              textShadow: '0 2px 10px rgba(0,0,0,0.8)'
             }}
           >
             <div
@@ -99,16 +94,18 @@ export const HeroBanner = () => {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.4rem',
-                background: 'var(--color-gold-muted)',
+                background: 'rgba(20, 23, 21, 0.65)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
                 color: 'var(--color-gold)',
                 border: '1px solid var(--color-border-gold)',
-                padding: '0.3rem 0.8rem',
+                padding: '0.35rem 0.9rem',
                 borderRadius: 'var(--radius-full)',
-                fontSize: '0.7rem',
+                fontSize: '0.72rem',
                 fontWeight: 700,
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
-                marginBottom: '1rem'
+                marginBottom: '0.85rem'
               }}
             >
               <Sparkles size={13} />
@@ -117,12 +114,13 @@ export const HeroBanner = () => {
 
             <h1
               style={{
-                fontSize: '2.4rem',
+                fontSize: '2.5rem',
                 lineHeight: '1.15',
                 color: '#ffffff',
-                marginBottom: '0.75rem',
+                marginBottom: '0.5rem',
                 fontFamily: 'var(--font-serif)',
-                fontWeight: 600
+                fontWeight: 600,
+                letterSpacing: '0.02em'
               }}
             >
               {slide.title}
@@ -133,7 +131,7 @@ export const HeroBanner = () => {
                 fontSize: '0.85rem',
                 letterSpacing: '0.2em',
                 color: 'var(--color-gold)',
-                marginBottom: '2rem',
+                marginBottom: '1.5rem',
                 textTransform: 'uppercase',
                 fontWeight: 600
               }}
@@ -149,6 +147,7 @@ export const HeroBanner = () => {
                   const el = document.getElementById('shop');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
+                style={{ width: 'auto', padding: '0 2rem' }}
               >
                 <span>EXPLORE COLLECTION</span>
                 <ArrowRight size={16} />
@@ -160,7 +159,7 @@ export const HeroBanner = () => {
         <div
           style={{
             position: 'absolute',
-            bottom: '25px',
+            bottom: '20px',
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
@@ -173,7 +172,7 @@ export const HeroBanner = () => {
               key={index}
               onClick={() => setCurrentSlide(index)}
               style={{
-                width: index === currentSlide ? '28px' : '8px',
+                width: index === currentSlide ? '32px' : '8px',
                 height: '8px',
                 borderRadius: 'var(--radius-full)',
                 background: index === currentSlide ? 'var(--color-gold)' : 'rgba(255, 255, 255, 0.4)',

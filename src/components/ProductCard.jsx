@@ -14,9 +14,12 @@ export const ProductCard = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
   const isWishlisted = wishlist.includes(product.id);
 
-  const discountPercent = Math.round(
-    ((product.originalPricePKR - product.pricePKR) / product.originalPricePKR) * 100
-  );
+  const priceVal = product.priceBDT || product.pricePKR || 0;
+  const originalPriceVal = product.originalPriceBDT || product.originalPricePKR || priceVal;
+
+  const discountPercent = originalPriceVal > priceVal
+    ? Math.round(((originalPriceVal - priceVal) / originalPriceVal) * 100)
+    : 0;
 
   return (
     <div
@@ -44,8 +47,9 @@ export const ProductCard = ({ product }) => {
               color: '#ffffff',
               fontSize: '0.65rem',
               fontWeight: 700,
-              padding: '0.2rem 0.5rem',
-              borderRadius: 'var(--radius-sm)'
+              padding: '0.25rem 0.5rem',
+              borderRadius: 'var(--radius-sm)',
+              zIndex: 2
             }}
           >
             -{discountPercent}% OFF
@@ -113,9 +117,9 @@ export const ProductCard = ({ product }) => {
         </p>
 
         <div className="card-price-row">
-          <span className="current-price">{formatPrice(product.pricePKR)}</span>
-          {product.originalPricePKR > product.pricePKR && (
-            <span className="original-price">{formatPrice(product.originalPricePKR)}</span>
+          <span className="current-price">{formatPrice(priceVal)}</span>
+          {originalPriceVal > priceVal && (
+            <span className="original-price">{formatPrice(originalPriceVal)}</span>
           )}
         </div>
 
