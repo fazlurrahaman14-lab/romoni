@@ -34,12 +34,38 @@ export const Footer = () => {
             <p style={{ fontSize: '0.85rem', color: '#a0ab9f', lineHeight: '1.6', marginBottom: '1.25rem' }}>
               Inspired by Mushq & Ammara Khan. Dedicated to crafting exquisite South Asian unstitched lawn, luxury pret, and bridal couture for global fashion connoisseurs.
             </p>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <a href="#" style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold)' }}>
-                <Instagram size={18} />
-              </a>
-              <a href="#" style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold)' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <a
+                href="https://www.facebook.com/RomoniMart"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Romoni Mart Official Facebook Page"
+                style={{
+                  height: '36px',
+                  padding: '0 0.85rem',
+                  borderRadius: 'var(--radius-full)',
+                  background: 'rgba(255,255,255,0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  color: 'var(--color-gold)',
+                  textDecoration: 'none',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  border: '1px solid rgba(255,255,255,0.15)'
+                }}
+              >
                 <Facebook size={18} />
+                <span>Facebook Page</span>
+              </a>
+              <a
+                href="https://www.facebook.com/RomoniMart"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow Romoni Mart on Instagram"
+                style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold)', textDecoration: 'none' }}
+              >
+                <Instagram size={18} />
               </a>
             </div>
           </div>

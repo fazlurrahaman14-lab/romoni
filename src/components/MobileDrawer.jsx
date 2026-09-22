@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStore } from '../context/StoreContext';
-import { X, ChevronRight, PhoneCall, ShieldCheck } from 'lucide-react';
+import { X, ChevronRight, PhoneCall, ShieldCheck, Facebook } from 'lucide-react';
 import { CATEGORIES } from '../data/products';
 
 export const MobileDrawer = () => {
@@ -107,8 +107,8 @@ export const MobileDrawer = () => {
           </button>
         </div>
 
-        {/* Drawer Footer - Elevated WhatsApp Button */}
-        <div className="drawer-footer">
+        {/* Drawer Footer - Elevated WhatsApp & Facebook Buttons */}
+        <div className="drawer-footer" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <a
             href="https://wa.me/?text=Hello%20Romoni%20Mart,%20I%20have%20an%20inquiry%20about%20your%20luxury%20collections."
             target="_blank"
@@ -118,6 +118,30 @@ export const MobileDrawer = () => {
           >
             <PhoneCall size={20} />
             <span>Chat on WhatsApp</span>
+          </a>
+
+          <a
+            href="https://www.facebook.com/RomoniMart"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              background: '#1877F2',
+              color: '#ffffff',
+              borderRadius: 'var(--radius-sm)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              textDecoration: 'none',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+          >
+            <Facebook size={18} />
+            <span>Visit Facebook Page</span>
           </a>
         </div>
       </div>
