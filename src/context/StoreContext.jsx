@@ -1,11 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { PRODUCTS, CURRENCY_RATES } from '../data/products';
+import { PRODUCTS } from '../data/products';
 
 const StoreContext = createContext();
 
 export const StoreProvider = ({ children }) => {
-  const [currency, setCurrency] = useState('PKR');
-
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem('ledis_dress_cart');
@@ -26,7 +24,6 @@ export const StoreProvider = ({ children }) => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [priceRange, setPriceRange] = useState([0, 200000]);
   const [sortBy, setSortBy] = useState('featured');
 
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -54,14 +51,9 @@ export const StoreProvider = ({ children }) => {
     }, 3000);
   };
 
-  const formatPrice = (pricePKR) => {
-    const rateObj = CURRENCY_RATES[currency] || CURRENCY_RATES.PKR;
-    const converted = Math.round(pricePKR * rateObj.rate);
-    
-    if (currency === 'PKR') {
-      return `${rateObj.symbol} ${converted.toLocaleString()}`;
-    }
-    return `${rateObj.symbol}${converted.toLocaleString()}`;
+  const formatPrice = (priceBDT) => {
+    const val = priceBDT || 0;
+    return `৳ ${Math.round(val).toLocaleString('en-IN')}`;
   };
 
   const addToCart = (product, selectedSize = 'Unstitched', selectedColor = null, quantity = 1) => {
@@ -128,17 +120,15 @@ export const StoreProvider = ({ children }) => {
     }
   };
 
-  const cartSubtotalPKR = cart.reduce((acc, item) => acc + item.product.pricePKR * item.quantity, 0);
+  const cartSubtotalPKR = cart.reduce((acc, item) => acc + (item.product.priceBDT || item.product.pricePKR) * item.quantity, 0);
   const discountAmountPKR = Math.round(cartSubtotalPKR * appliedDiscount);
   const cartTotalPKR = Math.max(0, cartSubtotalPKR - discountAmountPKR);
-  const freeShippingThresholdPKR = 35000;
+  const freeShippingThresholdPKR = 5000;
   const shippingProgress = Math.min(100, Math.round((cartSubtotalPKR / freeShippingThresholdPKR) * 100));
 
   return (
     <StoreContext.Provider
       value={{
-        currency,
-        setCurrency,
         formatPrice,
         cart,
         addToCart,
@@ -151,8 +141,6 @@ export const StoreProvider = ({ children }) => {
         setSearchQuery,
         selectedCategory,
         setSelectedCategory,
-        priceRange,
-        setPriceRange,
         sortBy,
         setSortBy,
         isCartOpen,

@@ -1,12 +1,10 @@
 import React from 'react';
 import { useStore } from '../context/StoreContext';
-import { Search, Heart, ShoppingBag, Menu, Globe } from 'lucide-react';
-import { CURRENCY_RATES, CATEGORIES } from '../data/products';
+import { Search, Heart, ShoppingBag, Menu } from 'lucide-react';
+import { CATEGORIES } from '../data/products';
 
 export const Header = () => {
   const {
-    currency,
-    setCurrency,
     cart,
     wishlist,
     setIsCartOpen,
@@ -21,28 +19,12 @@ export const Header = () => {
   return (
     <header className="main-header">
       <div className="announcement-bar">
-        <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', flex: 1, marginRight: '1rem' }}>
+        <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
           <div className="marquee-content">
             ✨ FREE EXPRESS DELIVERY ACROSS BANGLADESH ON ORDERS OVER ৳5,000 &nbsp;&nbsp;•&nbsp;&nbsp;
             CASH ON DELIVERY (COD) & BKASH AVAILABLE &nbsp;&nbsp;•&nbsp;&nbsp;
             USE CODE <strong style={{ color: '#ffffff' }}>LEDIS10</strong> FOR 10% OFF YOUR FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp;
           </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', shrink: 0 }}>
-          <Globe size={13} style={{ color: 'var(--color-gold)' }} />
-          <select
-            className="currency-select"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            aria-label="Select Currency"
-          >
-            {Object.keys(CURRENCY_RATES).map((code) => (
-              <option key={code} value={code}>
-                {code} ({CURRENCY_RATES[code].symbol})
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
