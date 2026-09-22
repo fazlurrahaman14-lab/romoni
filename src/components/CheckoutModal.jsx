@@ -11,7 +11,8 @@ export const CheckoutModal = () => {
     clearCart,
     formatPrice,
     cartTotalPKR,
-    currency
+    currency,
+    addOrder
   } = useStore();
 
   const [step, setStep] = useState('form');
@@ -22,7 +23,7 @@ export const CheckoutModal = () => {
     address: '',
     city: 'Dhaka',
     country: 'Bangladesh',
-    paymentMethod: 'cod',
+    paymentMethod: 'cod', // 'cod' | 'bkash' | 'card' | 'bank'
     notes: ''
   });
 
@@ -41,7 +42,24 @@ export const CheckoutModal = () => {
       return;
     }
 
-    const orderId = `LD-${Math.floor(100000 + Math.random() * 900000)}`;
+    const createdOrder = addOrder ? addOrder({
+      customerName: formData.fullName,
+      phone: formData.phone,
+      email: formData.email,
+      address: formData.address,
+      city: formData.city,
+      country: formData.country,
+      paymentMethod: formData.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : formData.paymentMethod === 'bkash' ? 'bKash / Nagad' : formData.paymentMethod.toUpperCase(),
+      items: cart.map(i => ({
+        title: i.product.title,
+        size: i.selectedSize,
+        quantity: i.quantity,
+        price: i.product.priceBDT || i.product.pricePKR || 0
+      })),
+      totalAmount: cartTotalPKR
+    }) : null;
+
+    const orderId = createdOrder ? createdOrder.id : `LD-${Math.floor(100000 + Math.random() * 900000)}`;
     const newSummary = {
       orderId,
       date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
@@ -90,7 +108,7 @@ export const CheckoutModal = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <Lock size={18} style={{ color: 'var(--color-gold-dark)' }} />
             <span className="drawer-title">
-              {step === 'form' ? 'Checkout - Ledis Dress Atelier' : 'Order Confirmation Receipt'}
+              {step === 'form' ? 'Checkout - Romoni Mart Atelier' : 'Order Confirmation Receipt'}
             </span>
           </div>
           <button className="action-btn" onClick={() => setIsCheckoutOpen(false)}>
@@ -204,6 +222,7 @@ export const CheckoutModal = () => {
                   </div>
                 </div>
 
+                {/* Bangladesh Payment Method Options */}
                 <div style={{ marginTop: '0.5rem' }}>
                   <h3 style={{ fontSize: '1.1rem', fontFamily: 'var(--font-serif)', color: 'var(--color-primary-dark)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.4rem', marginBottom: '0.8rem' }}>
                     2. Payment Method
@@ -248,6 +267,7 @@ export const CheckoutModal = () => {
                 </div>
               </div>
 
+              {/* Order Summary Sidebar */}
               <div style={{ background: '#fbf9f5', padding: '1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', height: 'fit-content' }}>
                 <h3 style={{ fontSize: '1.1rem', fontFamily: 'var(--font-serif)', color: 'var(--color-primary-dark)', marginBottom: '1rem' }}>
                   Order Summary ({cart.reduce((s, i) => s + i.quantity, 0)} Items)
@@ -282,7 +302,7 @@ export const CheckoutModal = () => {
 
                 <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', textAlign: 'center', marginTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                   <ShieldCheck size={14} style={{ color: 'var(--color-gold-dark)' }} />
-                  <span>Backed by Ledis Atelier 100% Quality Guarantee</span>
+                  <span>Backed by Romoni Mart Atelier 100% Quality Guarantee</span>
                 </p>
               </div>
             </form>
@@ -311,7 +331,7 @@ export const CheckoutModal = () => {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.75rem', marginBottom: '1rem' }}>
                   <div>
-                    <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem' }}>LEDIS DRESS ATELIER</h3>
+                    <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem' }}>ROMONI MART ATELIER</h3>
                     <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Date: {orderSummary?.date}</span>
                   </div>
                   <div style={{ textAlign: 'right' }}>
