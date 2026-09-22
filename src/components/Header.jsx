@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStore } from '../context/StoreContext';
-import { Search, Heart, ShoppingBag, Menu, ShieldCheck } from 'lucide-react';
+import { Search, Heart, ShoppingBag, Menu } from 'lucide-react';
 import { CATEGORIES } from '../data/products';
 
 export const Header = () => {
@@ -10,7 +10,6 @@ export const Header = () => {
     setIsCartOpen,
     setIsMobileDrawerOpen,
     setIsSearchOpen,
-    setIsAdminOpen,
     selectedCategory,
     setSelectedCategory
   } = useStore();
@@ -124,16 +123,6 @@ export const Header = () => {
             >
               <ShoppingBag size={20} />
               {totalCartItems > 0 && <span className="badge-count">{totalCartItems}</span>}
-            </button>
-
-            <button
-              className="action-btn"
-              onClick={() => setIsAdminOpen(true)}
-              title="Admin Dashboard (Manage Prices & Products)"
-              aria-label="Admin Dashboard"
-              style={{ color: 'var(--color-gold-dark)' }}
-            >
-              <ShieldCheck size={20} />
             </button>
           </div>
         </div>
