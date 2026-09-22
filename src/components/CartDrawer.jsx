@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../context/StoreContext';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Truck } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Truck, Lock } from 'lucide-react';
 
 export const CartDrawer = () => {
   const {
@@ -32,7 +32,7 @@ export const CartDrawer = () => {
       <div className="drawer-content drawer-right">
         <div className="drawer-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <ShoppingBag size={20} style={{ color: 'var(--color-gold)' }} />
+            <ShoppingBag size={20} style={{ color: 'var(--color-gold-dark)' }} />
             <span className="drawer-title">Shopping Bag ({cart.length})</span>
           </div>
           <button className="action-btn" onClick={() => setIsCartOpen(false)}>
@@ -46,8 +46,8 @@ export const CartDrawer = () => {
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <Truck size={15} style={{ color: 'var(--color-gold-dark)' }} />
                 {freeShippingDifferencePKR === 0
-                  ? '🎉 UNLOCKED FREE EXPRESS SHIPPING!'
-                  : `Add ${formatPrice(freeShippingDifferencePKR)} more for Free Express Shipping`}
+                  ? '🎉 UNLOCKED FREE EXPRESS SHIPPING IN BANGLADESH!'
+                  : `Add ${formatPrice(freeShippingDifferencePKR)} more for Free Delivery`}
               </span>
               <span>{shippingProgress}%</span>
             </div>
@@ -75,7 +75,7 @@ export const CartDrawer = () => {
               </div>
               <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem' }}>Your Bag is Empty</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', margin: '0.5rem 0 1.5rem' }}>
-                Discover our latest luxury unstitched lawn & pret collections.
+                Discover our latest unstitched luxury lawn & ready-to-wear pret collections.
               </p>
               <button
                 className="btn-primary"
@@ -95,7 +95,7 @@ export const CartDrawer = () => {
                   key={`${item.product.id}-${item.selectedSize}-${index}`}
                   style={{
                     display: 'flex',
-                    gap: '1rem',
+                    gap: '0.85rem',
                     padding: '0.85rem',
                     background: '#ffffff',
                     borderRadius: 'var(--radius-sm)',
@@ -124,7 +124,7 @@ export const CartDrawer = () => {
                       </div>
 
                       <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', display: 'block', marginTop: '2px' }}>
-                        Size: <strong>{item.selectedSize}</strong> • {item.product.sku}
+                        Size: <strong>{item.selectedSize}</strong> • SKU: {item.product.sku}
                       </span>
                     </div>
 
@@ -155,7 +155,7 @@ export const CartDrawer = () => {
                 </div>
               ))}
 
-              <div style={{ marginTop: '1rem', background: '#f9f6f0', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border-gold)' }}>
+              <div style={{ marginTop: '0.5rem', background: '#f9f6f0', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border-gold)' }}>
                 <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--color-primary-dark)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <Tag size={14} style={{ color: 'var(--color-gold-dark)' }} />
                   <span>Promo Code</span>
@@ -202,7 +202,7 @@ export const CartDrawer = () => {
 
         {cart.length > 0 && (
           <div className="drawer-footer">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '1rem', fontSize: '0.85rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '0.85rem', fontSize: '0.85rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-text-secondary)' }}>
                 <span>Subtotal</span>
                 <span>{formatPrice(cartSubtotalPKR)}</span>
@@ -214,14 +214,14 @@ export const CartDrawer = () => {
                 </div>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-text-secondary)' }}>
-                <span>Estimated Express Shipping</span>
-                <span>{freeShippingDifferencePKR === 0 ? 'FREE' : formatPrice(1500)}</span>
+                <span>Delivery Charge</span>
+                <span>{freeShippingDifferencePKR === 0 ? 'FREE' : formatPrice(120)}</span>
               </div>
               <div
                 style={{
                   display: 'flex',
                   justify: 'space-between',
-                  fontSize: '1.15rem',
+                  fontSize: '1.2rem',
                   fontWeight: 700,
                   color: 'var(--color-primary-dark)',
                   paddingTop: '0.5rem',
@@ -229,23 +229,24 @@ export const CartDrawer = () => {
                 }}
               >
                 <span>Grand Total</span>
-                <span>{formatPrice(cartTotalPKR + (freeShippingDifferencePKR === 0 ? 0 : 1500))}</span>
+                <span style={{ color: 'var(--color-primary-dark)' }}>
+                  {formatPrice(cartTotalPKR + (freeShippingDifferencePKR === 0 ? 0 : 120))}
+                </span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <button
-                className="btn-primary"
-                style={{ width: '100%' }}
-                onClick={() => {
-                  setIsCartOpen(false);
-                  setIsCheckoutOpen(true);
-                }}
-              >
-                <span>PROCEED TO SECURE CHECKOUT</span>
-                <ArrowRight size={16} />
-              </button>
-            </div>
+            <button
+              className="btn-primary"
+              style={{ width: '100%', height: '52px', fontSize: '0.92rem', gap: '0.6rem' }}
+              onClick={() => {
+                setIsCartOpen(false);
+                setIsCheckoutOpen(true);
+              }}
+            >
+              <Lock size={16} />
+              <span>PROCEED TO SECURE CHECKOUT</span>
+              <ArrowRight size={18} />
+            </button>
           </div>
         )}
       </div>

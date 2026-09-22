@@ -52,14 +52,15 @@ export const ProductQuickView = () => {
             top: '12px',
             right: '12px',
             zIndex: 10,
-            background: 'rgba(255,255,255,0.9)',
+            background: 'rgba(255,255,255,0.95)',
             borderRadius: 'var(--radius-full)',
-            width: '36px',
-            height: '36px',
+            width: '38px',
+            height: '38px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--color-primary-dark)'
+            color: 'var(--color-primary-dark)',
+            boxShadow: 'var(--shadow-sm)'
           }}
         >
           <X size={20} />
@@ -156,7 +157,7 @@ export const ProductQuickView = () => {
                       borderRadius: 'var(--radius-sm)',
                       fontSize: '0.8rem',
                       fontWeight: selectedSize === sz ? 700 : 500,
-                      border: selectedSize === sz ? '1px solid var(--color-gold)' : '1px solid var(--color-border)',
+                      border: selectedSize === sz ? '1.5px solid var(--color-gold)' : '1px solid var(--color-border)',
                       background: selectedSize === sz ? 'var(--color-primary-dark)' : '#ffffff',
                       color: selectedSize === sz ? 'var(--color-gold)' : 'var(--color-text-primary)'
                     }}
@@ -173,9 +174,10 @@ export const ProductQuickView = () => {
               )}
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginTop: '0.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
               <button
                 className="btn-primary"
+                style={{ width: '100%', height: '52px', fontSize: '0.9rem' }}
                 onClick={() => {
                   addToCart(product, selectedSize, selectedColor, 1);
                   setQuickViewProduct(null);
@@ -185,7 +187,11 @@ export const ProductQuickView = () => {
                 <span>ADD TO SHOPPING BAG</span>
               </button>
 
-              <button className="btn-whatsapp" onClick={handleWhatsAppOrder}>
+              <button
+                className="btn-whatsapp"
+                style={{ width: '100%', height: '52px', fontSize: '0.9rem' }}
+                onClick={handleWhatsAppOrder}
+              >
                 <PhoneCall size={18} />
                 <span>ORDER DIRECT VIA WHATSAPP</span>
               </button>

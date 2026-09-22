@@ -20,8 +20,8 @@ export const CheckoutModal = () => {
     email: '',
     phone: '',
     address: '',
-    city: '',
-    country: 'Pakistan',
+    city: 'Dhaka',
+    country: 'Bangladesh',
     paymentMethod: 'cod',
     notes: ''
   });
@@ -37,7 +37,7 @@ export const CheckoutModal = () => {
   const handleSubmitOrder = (e) => {
     e.preventDefault();
     if (!formData.fullName || !formData.phone || !formData.address) {
-      alert('Please fill in required fields: Name, Phone, and Address.');
+      alert('Please fill in required fields: Name, Phone, and Delivery Address.');
       return;
     }
 
@@ -76,7 +76,7 @@ export const CheckoutModal = () => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: '94vw',
-          maxWidth: '800px',
+          maxWidth: '820px',
           maxHeight: '92vh',
           background: '#ffffff',
           borderRadius: 'var(--radius-md)',
@@ -88,9 +88,9 @@ export const CheckoutModal = () => {
       >
         <div className="drawer-header" style={{ position: 'sticky', top: 0, zIndex: 10, background: '#ffffff' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <Lock size={18} style={{ color: 'var(--color-gold)' }} />
+            <Lock size={18} style={{ color: 'var(--color-gold-dark)' }} />
             <span className="drawer-title">
-              {step === 'form' ? 'Secure Atelier Checkout' : 'Order Confirmation Receipt'}
+              {step === 'form' ? 'Checkout - Ledis Dress Atelier' : 'Order Confirmation Receipt'}
             </span>
           </div>
           <button className="action-btn" onClick={() => setIsCheckoutOpen(false)}>
@@ -103,7 +103,7 @@ export const CheckoutModal = () => {
             <form onSubmit={handleSubmitOrder} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <h3 style={{ fontSize: '1.1rem', fontFamily: 'var(--font-serif)', color: 'var(--color-primary-dark)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.4rem' }}>
-                  1. Delivery Details
+                  1. Shipping & Contact Info
                 </h3>
 
                 <div>
@@ -114,7 +114,7 @@ export const CheckoutModal = () => {
                     type="text"
                     name="fullName"
                     required
-                    placeholder="e.g. Ayesha Khan"
+                    placeholder="e.g. Nusrat Jahan"
                     value={formData.fullName}
                     onChange={handleChange}
                     style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', marginTop: '0.2rem', fontSize: '0.85rem' }}
@@ -124,13 +124,13 @@ export const CheckoutModal = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                   <div>
                     <label style={{ fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--color-text-secondary)' }}>
-                      Phone / WhatsApp *
+                      Mobile / WhatsApp Number *
                     </label>
                     <input
                       type="tel"
                       name="phone"
                       required
-                      placeholder="+92 300 1234567"
+                      placeholder="01700 000000"
                       value={formData.phone}
                       onChange={handleChange}
                       style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', marginTop: '0.2rem', fontSize: '0.85rem' }}
@@ -144,7 +144,7 @@ export const CheckoutModal = () => {
                     <input
                       type="email"
                       name="email"
-                      placeholder="ayesha@example.com"
+                      placeholder="nusrat@example.com"
                       value={formData.email}
                       onChange={handleChange}
                       style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', marginTop: '0.2rem', fontSize: '0.85rem' }}
@@ -154,13 +154,13 @@ export const CheckoutModal = () => {
 
                 <div>
                   <label style={{ fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--color-text-secondary)' }}>
-                    Shipping Address *
+                    Delivery Address *
                   </label>
                   <textarea
                     name="address"
                     required
                     rows="2"
-                    placeholder="House number, Street name, Area"
+                    placeholder="House / Flat No, Road No, Area, Thana"
                     value={formData.address}
                     onChange={handleChange}
                     style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', marginTop: '0.2rem', fontSize: '0.85rem' }}
@@ -170,36 +170,37 @@ export const CheckoutModal = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                   <div>
                     <label style={{ fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--color-text-secondary)' }}>
-                      City *
+                      City / District *
                     </label>
-                    <input
-                      type="text"
+                    <select
                       name="city"
-                      required
-                      placeholder="Lahore / Karachi / London"
                       value={formData.city}
                       onChange={handleChange}
                       style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', marginTop: '0.2rem', fontSize: '0.85rem' }}
-                    />
+                    >
+                      <option value="Dhaka">Dhaka</option>
+                      <option value="Chittagong">Chittagong</option>
+                      <option value="Sylhet">Sylhet</option>
+                      <option value="Rajshahi">Rajshahi</option>
+                      <option value="Khulna">Khulna</option>
+                      <option value="Barisal">Barisal</option>
+                      <option value="Rangpur">Rangpur</option>
+                      <option value="Comilla">Comilla</option>
+                      <option value="Mymensingh">Mymensingh</option>
+                    </select>
                   </div>
 
                   <div>
                     <label style={{ fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--color-text-secondary)' }}>
                       Country
                     </label>
-                    <select
+                    <input
+                      type="text"
                       name="country"
-                      value={formData.country}
-                      onChange={handleChange}
-                      style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', marginTop: '0.2rem', fontSize: '0.85rem' }}
-                    >
-                      <option value="Pakistan">Pakistan</option>
-                      <option value="United States">United States</option>
-                      <option value="United Kingdom">United Kingdom</option>
-                      <option value="United Arab Emirates">United Arab Emirates</option>
-                      <option value="Saudi Arabia">Saudi Arabia</option>
-                      <option value="Canada">Canada</option>
-                    </select>
+                      value="Bangladesh"
+                      readOnly
+                      style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', marginTop: '0.2rem', fontSize: '0.85rem', background: '#f4efe6' }}
+                    />
                   </div>
                 </div>
 
@@ -210,9 +211,10 @@ export const CheckoutModal = () => {
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                     {[
-                      { id: 'cod', label: 'Cash on Delivery (COD)', desc: 'Pay with cash upon package delivery' },
-                      { id: 'card', label: 'Debit / Credit Card (Visa / Mastercard)', desc: 'Instant 256-bit encrypted card checkout' },
-                      { id: 'bank', label: 'Direct Bank Transfer / JazzCash', desc: 'Transfer directly to Ledis Dress account' }
+                      { id: 'cod', label: 'Cash on Delivery (COD)', desc: 'Pay cash to delivery rider upon package arrival' },
+                      { id: 'bkash', label: 'bKash / Nagad Mobile Banking', desc: 'Pay via bKash Merchant (01700-000000)' },
+                      { id: 'card', label: 'Credit / Debit Card (Visa / Mastercard)', desc: 'Secure 256-bit online card payment' },
+                      { id: 'bank', label: 'Direct Bank Transfer', desc: 'City Bank / BRAC Bank transfer' }
                     ].map((method) => (
                       <label
                         key={method.id}
@@ -222,7 +224,7 @@ export const CheckoutModal = () => {
                           gap: '0.75rem',
                           padding: '0.75rem 1rem',
                           borderRadius: 'var(--radius-sm)',
-                          border: formData.paymentMethod === method.id ? '1px solid var(--color-gold)' : '1px solid var(--color-border)',
+                          border: formData.paymentMethod === method.id ? '1.5px solid var(--color-gold)' : '1px solid var(--color-border)',
                           background: formData.paymentMethod === method.id ? 'var(--color-gold-muted)' : '#ffffff',
                           cursor: 'pointer'
                         }}
@@ -235,7 +237,7 @@ export const CheckoutModal = () => {
                           onChange={handleChange}
                         />
                         <div>
-                          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-primary-dark)', display: 'block' }}>
+                          <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-primary-dark)', display: 'block' }}>
                             {method.label}
                           </span>
                           <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>{method.desc}</span>
@@ -269,18 +271,18 @@ export const CheckoutModal = () => {
                 <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.85rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span>Total Amount</span>
-                    <strong style={{ fontSize: '1.2rem', color: 'var(--color-primary-dark)' }}>{formatPrice(cartTotalPKR)}</strong>
+                    <strong style={{ fontSize: '1.25rem', color: 'var(--color-primary-dark)' }}>{formatPrice(cartTotalPKR)}</strong>
                   </div>
                 </div>
 
-                <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1.5rem' }}>
+                <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '1.5rem', height: '52px' }}>
                   <Lock size={16} />
-                  <span>PLACE CONFIRMED ORDER</span>
+                  <span>CONFIRM ORDER NOW</span>
                 </button>
 
                 <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', textAlign: 'center', marginTop: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                   <ShieldCheck size={14} style={{ color: 'var(--color-gold-dark)' }} />
-                  <span>Protected by Ledis Atelier 100% Satisfaction Guarantee</span>
+                  <span>Backed by Ledis Atelier 100% Quality Guarantee</span>
                 </p>
               </div>
             </form>
@@ -288,10 +290,10 @@ export const CheckoutModal = () => {
             <div style={{ textAlign: 'center', padding: '1rem 0' }}>
               <CheckCircle size={60} style={{ color: 'var(--color-gold-dark)', margin: '0 auto 1rem' }} />
               <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', color: 'var(--color-primary-dark)' }}>
-                Thank You for Your Order!
+                Order Successfully Placed!
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
-                Your order <strong>#{orderSummary?.orderId}</strong> has been received and sent to our atelier for dispatch.
+                Your order <strong>#{orderSummary?.orderId}</strong> has been received. Our team will contact you shortly.
               </p>
 
               <div
@@ -325,7 +327,7 @@ export const CheckoutModal = () => {
                 <div style={{ marginBottom: '1rem', fontSize: '0.8rem' }}>
                   <strong>Customer:</strong> {orderSummary?.customer.fullName} ({orderSummary?.customer.phone})<br />
                   <strong>Address:</strong> {orderSummary?.customer.address}, {orderSummary?.customer.city}, {orderSummary?.customer.country}<br />
-                  <strong>Payment:</strong> {orderSummary?.customer.paymentMethod.toUpperCase()}
+                  <strong>Payment Method:</strong> {orderSummary?.customer.paymentMethod.toUpperCase()}
                 </div>
 
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', marginBottom: '1rem' }}>
@@ -351,7 +353,7 @@ export const CheckoutModal = () => {
                 </table>
 
                 <div style={{ borderTop: '2px solid var(--color-primary-dark)', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '1rem', fontWeight: 700 }}>
-                  <span>Grand Total Paid</span>
+                  <span>Grand Total</span>
                   <span>{formatPrice(orderSummary?.totalAmount || 0)}</span>
                 </div>
               </div>

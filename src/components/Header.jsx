@@ -23,9 +23,9 @@ export const Header = () => {
       <div className="announcement-bar">
         <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', flex: 1, marginRight: '1rem' }}>
           <div className="marquee-content">
-            ✨ FREE WORLDWIDE EXPRESS DELIVERY ON ORDERS OVER $150 &nbsp;&nbsp;•&nbsp;&nbsp;
+            ✨ FREE EXPRESS DELIVERY ACROSS BANGLADESH ON ORDERS OVER ৳5,000 &nbsp;&nbsp;•&nbsp;&nbsp;
+            CASH ON DELIVERY (COD) & BKASH AVAILABLE &nbsp;&nbsp;•&nbsp;&nbsp;
             USE CODE <strong style={{ color: '#ffffff' }}>LEDIS10</strong> FOR 10% OFF YOUR FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp;
-            AUTHENTIC PAKISTANI LUXURY EMBROIDERED LAWN & COUTURE &nbsp;&nbsp;•&nbsp;&nbsp;
           </div>
         </div>
 
@@ -54,14 +54,14 @@ export const Header = () => {
             onClick={() => setIsMobileDrawerOpen(true)}
             aria-label="Open Menu"
           >
-            <Menu size={24} />
+            <Menu size={22} />
           </button>
 
           <a href="#" className="brand-logo-wrapper" onClick={() => setSelectedCategory('all')}>
             <img src="/assets/logo.jpg" alt="Ledis Dress Logo" className="brand-logo-img" />
             <div>
               <span className="brand-name">LEDIS DRESS</span>
-              <span className="brand-subtext">Atelier & Couture</span>
+              <span className="brand-subtext">ATELIER & COUTURE</span>
             </div>
           </a>
 
