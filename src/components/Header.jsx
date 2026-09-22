@@ -25,7 +25,7 @@ export const Header = () => {
           <div className="marquee-content">
             ✨ FREE EXPRESS DELIVERY ACROSS BANGLADESH ON ORDERS OVER ৳5,000 &nbsp;&nbsp;•&nbsp;&nbsp;
             CASH ON DELIVERY (COD) & BKASH AVAILABLE &nbsp;&nbsp;•&nbsp;&nbsp;
-            USE CODE <strong style={{ color: '#ffffff' }}>LEDIS10</strong> FOR 10% OFF YOUR FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp;
+            USE CODE <strong style={{ color: '#ffffff' }}>ROMONI10</strong> FOR 10% OFF YOUR FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp;
           </div>
         </div>
       </div>
@@ -44,15 +44,25 @@ export const Header = () => {
           </button>
 
           {/* Brand Logo & Name */}
-          <a href="#" className="brand-logo-wrapper" onClick={() => setSelectedCategory('all')}>
+          <a
+            href="#"
+            className="brand-logo-wrapper"
+            onClick={(e) => {
+              e.preventDefault();
+              setSelectedCategory('all');
+            }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}
+          >
             <img
               src="/assets/logo.jpg"
-              alt="Ledis Dress Logo"
+              alt="Romoni Mart Logo"
               style={{
-                height: '42px',
+                height: '46px',
                 width: 'auto',
                 objectFit: 'contain',
-                borderRadius: 'var(--radius-sm)'
+                borderRadius: 'var(--radius-sm)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                border: '1px solid var(--color-border-gold)'
               }}
               onError={(e) => {
                 e.target.style.display = 'none';
@@ -62,8 +72,8 @@ export const Header = () => {
             <div
               style={{
                 display: 'none',
-                width: '40px',
-                height: '40px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '50%',
                 background: 'var(--color-primary-dark)',
                 border: '1.5px solid var(--color-gold)',
@@ -76,11 +86,15 @@ export const Header = () => {
                 flexShrink: 0
               }}
             >
-              LD
+              RM
             </div>
-            <div>
-              <span className="brand-name">LEDIS DRESS</span>
-              <span className="brand-subtext">ATELIER & COUTURE</span>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span className="brand-name" style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '0.04em' }}>
+                ROMONI MART
+              </span>
+              <span className="brand-subtext" style={{ fontSize: '0.65rem', color: 'var(--color-gold-dark)', letterSpacing: '0.2em' }}>
+                LUXURY ATELIER & COUTURE
+              </span>
             </div>
           </a>
 
