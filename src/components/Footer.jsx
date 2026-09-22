@@ -3,7 +3,7 @@ import { useStore } from '../context/StoreContext';
 import { Mail, Phone, MapPin, Instagram, Facebook, ShieldCheck, Heart } from 'lucide-react';
 
 export const Footer = () => {
-  const { showToast } = useStore();
+  const { showToast, setIsAdminOpen } = useStore();
   const [email, setEmail] = useState('');
 
   const handleSubscribe = (e) => {
@@ -18,6 +18,7 @@ export const Footer = () => {
     <footer style={{ background: 'var(--color-dark)', color: 'var(--color-text-light)', paddingTop: '4rem', paddingBottom: '5rem', borderTop: '2px solid var(--color-gold)' }}>
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '2.5rem', marginBottom: '3rem' }}>
+          {/* Brand Info */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
               <img src="/assets/logo.jpg" alt="Ledis Dress" style={{ height: '44px', borderRadius: '4px' }} />
@@ -43,32 +44,35 @@ export const Footer = () => {
             </div>
           </div>
 
+          {/* Catalog Quick Links */}
           <div>
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: '#ffffff', marginBottom: '1rem', borderBottom: '1px solid var(--color-gold-dark)', paddingBottom: '0.4rem', width: 'fit-content' }}>
               Collections
             </h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', color: '#a0ab9f' }}>
-              <li><a href="#shop">COCO Prints Vol 4</a></li>
-              <li><a href="#shop">ETHNC Embroidered Lawn</a></li>
-              <li><a href="#shop">Winter Vol 1 2025 Velvet</a></li>
-              <li><a href="#shop">Bridal & Formals Couture</a></li>
-              <li><a href="#shop">Luxury Pret Series</a></li>
+              <li><a href="#shop" style={{ transition: 'color 0.2s' }}>COCO Prints Vol 4</a></li>
+              <li><a href="#shop" style={{ transition: 'color 0.2s' }}>ETHNC Embroidered Lawn</a></li>
+              <li><a href="#shop" style={{ transition: 'color 0.2s' }}>Winter Vol 1 2025 Velvet</a></li>
+              <li><a href="#shop" style={{ transition: 'color 0.2s' }}>Bridal & Formals Couture</a></li>
+              <li><a href="#shop" style={{ transition: 'color 0.2s' }}>Luxury Pret Series</a></li>
             </ul>
           </div>
 
+          {/* Customer Support */}
           <div>
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: '#ffffff', marginBottom: '1rem', borderBottom: '1px solid var(--color-gold-dark)', paddingBottom: '0.4rem', width: 'fit-content' }}>
               Customer Care
             </h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', color: '#a0ab9f' }}>
-              <li><a href="#">Worldwide Shipping & Delivery</a></li>
-              <li><a href="#">Custom Stitching & Size Guide</a></li>
-              <li><a href="#">Track Your Order</a></li>
-              <li><a href="#">Return & Exchange Policy</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()}>Worldwide Shipping & Delivery</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()}>Custom Stitching & Size Guide</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()}>Track Your Order</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()}>Return & Exchange Policy</a></li>
               <li><a href="https://wa.me/?text=Inquiry" target="_blank" rel="noreferrer">WhatsApp 24/7 Helpline</a></li>
             </ul>
           </div>
 
+          {/* Newsletter Signup */}
           <div>
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: '#ffffff', marginBottom: '1rem', borderBottom: '1px solid var(--color-gold-dark)', paddingBottom: '0.4rem', width: 'fit-content' }}>
               Join Ledis Atelier
@@ -103,14 +107,22 @@ export const Footer = () => {
           </div>
         </div>
 
+        {/* Bottom Bar */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', fontSize: '0.78rem', color: '#7a8579' }}>
           <div>
             © {new Date().getFullYear()} Ledis Dress Atelier. All Rights Reserved. Built for speed & cellphone experience.
           </div>
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
             <span>🔒 256-Bit SSL Encrypted</span>
             <span>✈ DHL Express Shipping</span>
             <span>💵 Cash on Delivery</span>
+            <button
+              onClick={() => setIsAdminOpen(true)}
+              style={{ background: 'none', border: 'none', color: 'var(--color-gold)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.75rem' }}
+            >
+              <ShieldCheck size={14} />
+              <span>Admin Portal</span>
+            </button>
           </div>
         </div>
       </div>

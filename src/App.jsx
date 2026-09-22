@@ -11,33 +11,36 @@ import { MobileDrawer } from './components/MobileDrawer';
 import { MobileBottomBar } from './components/MobileBottomBar';
 import { SearchModal } from './components/SearchModal';
 import { CheckoutModal } from './components/CheckoutModal';
+import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
-import { PRODUCTS } from './data/products';
 import { Sparkles, CheckCircle2 } from 'lucide-react';
 
 const MainShop = () => {
-  const { selectedCategory, searchQuery, sortBy, toast } = useStore();
+  const { productsList, selectedCategory, searchQuery, sortBy, toast } = useStore();
 
-  let filtered = PRODUCTS.filter((p) => {
+  // Filter logic
+  let filtered = (productsList || []).filter((p) => {
     const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
     const matchesSearch =
       !searchQuery ||
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.collection.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.fabric.toLowerCase().includes(searchQuery.toLowerCase());
+      (p.fabric && p.fabric.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
+  // Sort logic
   if (sortBy === 'price-low') {
-    filtered.sort((a, b) => a.pricePKR - b.pricePKR);
+    filtered.sort((a, b) => (a.priceBDT || a.pricePKR || 0) - (b.priceBDT || b.pricePKR || 0));
   } else if (sortBy === 'price-high') {
-    filtered.sort((a, b) => b.pricePKR - a.pricePKR);
+    filtered.sort((a, b) => (b.priceBDT || b.pricePKR || 0) - (a.priceBDT || a.pricePKR || 0));
   } else if (sortBy === 'newest') {
     filtered.reverse();
   }
 
   return (
     <main id="shop" style={{ padding: '3.5rem 0 5rem' }}>
+      {/* Toast Notification */}
       {toast && (
         <div className="toast-notification">
           <CheckCircle2 size={18} style={{ color: 'var(--color-gold)' }} />
@@ -46,6 +49,7 @@ const MainShop = () => {
       )}
 
       <div className="container">
+        {/* Section Heading */}
         <div style={{ marginBottom: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-gold-dark)', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
             <Sparkles size={14} />
@@ -56,8 +60,10 @@ const MainShop = () => {
           </h2>
         </div>
 
+        {/* Filter Toolbar */}
         <ProductFilter />
 
+        {/* Catalog Grid */}
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem 1rem', background: '#ffffff', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
             <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem' }}>No suits found</h3>
@@ -87,12 +93,14 @@ export const App = () => {
         <MainShop />
         <Footer />
 
+        {/* Overlays & Modals */}
         <MobileDrawer />
         <MobileBottomBar />
         <CartDrawer />
         <ProductQuickView />
         <SearchModal />
         <CheckoutModal />
+        <AdminDashboard />
       </div>
     </StoreProvider>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStore } from '../context/StoreContext';
-import { Search, Heart, ShoppingBag, Menu } from 'lucide-react';
+import { Search, Heart, ShoppingBag, Menu, ShieldCheck } from 'lucide-react';
 import { CATEGORIES } from '../data/products';
 
 export const Header = () => {
@@ -10,6 +10,7 @@ export const Header = () => {
     setIsCartOpen,
     setIsMobileDrawerOpen,
     setIsSearchOpen,
+    setIsAdminOpen,
     selectedCategory,
     setSelectedCategory
   } = useStore();
@@ -18,6 +19,7 @@ export const Header = () => {
 
   return (
     <header className="main-header">
+      {/* Top Announcement Marquee */}
       <div className="announcement-bar">
         <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
           <div className="marquee-content">
@@ -28,8 +30,10 @@ export const Header = () => {
         </div>
       </div>
 
+      {/* Main Navbar */}
       <div className="container">
         <div className="header-inner">
+          {/* Mobile Menu Trigger */}
           <button
             className="action-btn"
             style={{ display: 'flex' }}
@@ -39,15 +43,30 @@ export const Header = () => {
             <Menu size={22} />
           </button>
 
+          {/* Brand Logo & Name */}
           <a href="#" className="brand-logo-wrapper" onClick={() => setSelectedCategory('all')}>
+            <img
+              src="/assets/logo.jpg"
+              alt="Ledis Dress Logo"
+              style={{
+                height: '42px',
+                width: 'auto',
+                objectFit: 'contain',
+                borderRadius: 'var(--radius-sm)'
+              }}
+              onError={(e) => {
+                e.target.style.display = 'none';
+                if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+              }}
+            />
             <div
               style={{
+                display: 'none',
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
                 background: 'var(--color-primary-dark)',
                 border: '1.5px solid var(--color-gold)',
-                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: 'var(--color-gold)',
@@ -65,6 +84,7 @@ export const Header = () => {
             </div>
           </a>
 
+          {/* Desktop Links */}
           <nav className="desktop-nav">
             {CATEGORIES.map((cat) => (
               <a
@@ -83,6 +103,7 @@ export const Header = () => {
             ))}
           </nav>
 
+          {/* Action Icons */}
           <div className="header-actions">
             <button
               className="action-btn"
@@ -114,6 +135,16 @@ export const Header = () => {
             >
               <ShoppingBag size={20} />
               {totalCartItems > 0 && <span className="badge-count">{totalCartItems}</span>}
+            </button>
+
+            <button
+              className="action-btn"
+              onClick={() => setIsAdminOpen(true)}
+              title="Admin Dashboard (Manage Prices & Products)"
+              aria-label="Admin Dashboard"
+              style={{ color: 'var(--color-gold-dark)' }}
+            >
+              <ShieldCheck size={20} />
             </button>
           </div>
         </div>

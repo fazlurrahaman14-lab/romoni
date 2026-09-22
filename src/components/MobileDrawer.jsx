@@ -7,6 +7,7 @@ export const MobileDrawer = () => {
   const {
     isMobileDrawerOpen,
     setIsMobileDrawerOpen,
+    setIsAdminOpen,
     selectedCategory,
     setSelectedCategory
   } = useStore();
@@ -17,6 +18,7 @@ export const MobileDrawer = () => {
     <>
       <div className="overlay" onClick={() => setIsMobileDrawerOpen(false)} />
       <div className="drawer-content drawer-left">
+        {/* Drawer Header */}
         <div className="drawer-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <img src="/assets/logo.jpg" alt="Ledis Dress" style={{ height: '36px', borderRadius: '4px' }} />
@@ -34,6 +36,7 @@ export const MobileDrawer = () => {
           </button>
         </div>
 
+        {/* Drawer Body */}
         <div className="drawer-body">
           <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-text-muted)', marginBottom: '1rem', fontWeight: 600 }}>
             Catalog Collections
@@ -76,8 +79,35 @@ export const MobileDrawer = () => {
               Direct from designer ateliers. Nationwide express delivery & 24/7 customer helpline.
             </p>
           </div>
+
+          <button
+            onClick={() => {
+              setIsMobileDrawerOpen(false);
+              setIsAdminOpen(true);
+            }}
+            style={{
+              width: '100%',
+              marginTop: '1rem',
+              padding: '0.75rem',
+              background: 'var(--color-primary-dark)',
+              color: 'var(--color-gold)',
+              border: '1px solid var(--color-border-gold)',
+              borderRadius: 'var(--radius-sm)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            <ShieldCheck size={18} />
+            <span>OPEN ADMIN DASHBOARD</span>
+          </button>
         </div>
 
+        {/* Drawer Footer - Elevated WhatsApp Button */}
         <div className="drawer-footer">
           <a
             href="https://wa.me/?text=Hello%20Ledis%20Dress,%20I%20have%20an%20inquiry%20about%20your%20luxury%20collections."
