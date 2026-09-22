@@ -51,48 +51,23 @@ export const Header = () => {
               e.preventDefault();
               setSelectedCategory('all');
             }}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}
           >
             <img
               src="/assets/logo.jpg"
               alt="Romoni Mart Logo"
-              style={{
-                height: '46px',
-                width: 'auto',
-                objectFit: 'contain',
-                borderRadius: 'var(--radius-sm)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                border: '1px solid var(--color-border-gold)'
-              }}
+              className="brand-logo-img"
               onError={(e) => {
-                e.target.style.display = 'none';
-                if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                if (!e.target.dataset.triedFallback) {
+                  e.target.dataset.triedFallback = 'true';
+                  e.target.src = '/logo.jpg';
+                }
               }}
             />
-            <div
-              style={{
-                display: 'none',
-                width: '42px',
-                height: '42px',
-                borderRadius: '50%',
-                background: 'var(--color-primary-dark)',
-                border: '1.5px solid var(--color-gold)',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--color-gold)',
-                fontFamily: 'var(--font-serif)',
-                fontWeight: 700,
-                fontSize: '1rem',
-                flexShrink: 0
-              }}
-            >
-              RM
-            </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span className="brand-name" style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '0.04em' }}>
+              <span className="brand-name">
                 ROMONI MART
               </span>
-              <span className="brand-subtext" style={{ fontSize: '0.65rem', color: 'var(--color-gold-dark)', letterSpacing: '0.2em' }}>
+              <span className="brand-subtext">
                 LUXURY ATELIER & COUTURE
               </span>
             </div>

@@ -9,7 +9,7 @@ export const Footer = () => {
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (email) {
-      showToast('🎁 Subscribed! Use code LEDIS10 for 10% off.');
+      showToast('🎁 Subscribed! Use code ROMONI10 for 10% off.');
       setEmail('');
     }
   };
@@ -20,14 +20,14 @@ export const Footer = () => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '2.5rem', marginBottom: '3rem' }}>
           {/* Brand Info */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-              <img src="/assets/logo.jpg" alt="Ledis Dress" style={{ height: '44px', borderRadius: '4px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1rem' }}>
+              <img src="/assets/logo.jpg" alt="Romoni Mart" style={{ height: '48px', borderRadius: '4px', border: '1px solid var(--color-border-gold)' }} />
               <div>
-                <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', fontWeight: 700, color: '#ffffff', letterSpacing: '0.05em' }}>
-                  LEDIS DRESS
+                <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', fontWeight: 800, color: '#ffffff', letterSpacing: '0.05em' }}>
+                  ROMONI MART
                 </span>
                 <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--color-gold)', letterSpacing: '0.25em' }}>
-                  ATELIER & COUTURE
+                  LUXURY ATELIER & COUTURE
                 </span>
               </div>
             </div>
@@ -75,7 +75,7 @@ export const Footer = () => {
           {/* Newsletter Signup */}
           <div>
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: '#ffffff', marginBottom: '1rem', borderBottom: '1px solid var(--color-gold-dark)', paddingBottom: '0.4rem', width: 'fit-content' }}>
-              Join Ledis Atelier
+              Join Romoni Mart Atelier
             </h4>
             <p style={{ fontSize: '0.8rem', color: '#a0ab9f', marginBottom: '1rem' }}>
               Subscribe to get private access to early catalog drops and exclusive 10% discount codes.
@@ -110,7 +110,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', fontSize: '0.78rem', color: '#7a8579' }}>
           <div>
-            © {new Date().getFullYear()} Ledis Dress Atelier. All Rights Reserved. Built for speed & cellphone experience.
+            © {new Date().getFullYear()} Romoni Mart Atelier. All Rights Reserved. Built for speed & cellphone experience.
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
             <span>🔒 256-Bit SSL Encrypted</span>

@@ -7,9 +7,9 @@ export const MobileDrawer = () => {
   const {
     isMobileDrawerOpen,
     setIsMobileDrawerOpen,
-    setIsAdminOpen,
     selectedCategory,
-    setSelectedCategory
+    setSelectedCategory,
+    setIsAdminOpen
   } = useStore();
 
   if (!isMobileDrawerOpen) return null;
@@ -20,13 +20,13 @@ export const MobileDrawer = () => {
       <div className="drawer-content drawer-left">
         {/* Drawer Header */}
         <div className="drawer-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <img src="/assets/logo.jpg" alt="Ledis Dress" style={{ height: '36px', borderRadius: '4px' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <img src="/assets/logo.jpg" alt="Romoni Mart" style={{ height: '40px', borderRadius: '4px', border: '1px solid var(--color-border-gold)' }} />
             <div>
-              <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.1rem' }}>
-                LEDIS DRESS
+              <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 800, fontSize: '1.2rem', color: 'var(--color-primary-dark)' }}>
+                ROMONI MART
               </span>
-              <span style={{ display: 'block', fontSize: '0.6rem', color: 'var(--color-gold-dark)', letterSpacing: '0.15em' }}>
+              <span style={{ display: 'block', fontSize: '0.6rem', color: 'var(--color-gold-dark)', letterSpacing: '0.18em' }}>
                 LUXURY ATELIER
               </span>
             </div>
@@ -110,7 +110,7 @@ export const MobileDrawer = () => {
         {/* Drawer Footer - Elevated WhatsApp Button */}
         <div className="drawer-footer">
           <a
-            href="https://wa.me/?text=Hello%20Ledis%20Dress,%20I%20have%20an%20inquiry%20about%20your%20luxury%20collections."
+            href="https://wa.me/?text=Hello%20Romoni%20Mart,%20I%20have%20an%20inquiry%20about%20your%20luxury%20collections."
             target="_blank"
             rel="noopener noreferrer"
             className="btn-whatsapp"
