@@ -147,29 +147,41 @@ export const StoreProvider = ({ children }) => {
     };
   };
 
-  // Subdomain & URL auto admin trigger (e.g., admin.domain.com, dashboard.domain.com, dashboad.domain.com, /admin, or ?admin=true)
+  // Subdomain & URL auto admin trigger (e.g. romoni.fcomation.com/admin, admin.domain.com, /admin, ?admin=true, #admin)
   useEffect(() => {
-    try {
-      const host = window.location.hostname;
-      const path = window.location.pathname;
-      const search = window.location.search;
-      if (
-        host.startsWith('admin.') ||
-        host.startsWith('dashboard.') ||
-        host.startsWith('dashboad.') ||
-        path.startsWith('/admin') ||
-        path.startsWith('/dashboard') ||
-        path.startsWith('/dashboad') ||
-        search.includes('admin=true') ||
-        window.location.hash === '#admin' ||
-        window.location.hash === '#dashboard' ||
-        window.location.hash === '#dashboad'
-      ) {
-        setIsAdminOpen(true);
+    const checkAdminRoute = () => {
+      try {
+        const host = window.location.hostname.toLowerCase();
+        const path = window.location.pathname.toLowerCase();
+        const search = window.location.search.toLowerCase();
+        const hash = window.location.hash.toLowerCase();
+
+        if (
+          host.startsWith('admin.') ||
+          host.startsWith('dashboard.') ||
+          host.startsWith('dashboad.') ||
+          path.startsWith('/admin') ||
+          path.startsWith('/dashboard') ||
+          path.startsWith('/dashboad') ||
+          search.includes('admin=true') ||
+          hash === '#admin' ||
+          hash === '#dashboard' ||
+          hash === '#dashboad'
+        ) {
+          setIsAdminOpen(true);
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    }
+    };
+
+    checkAdminRoute();
+    window.addEventListener('hashchange', checkAdminRoute);
+    window.addEventListener('popstate', checkAdminRoute);
+    return () => {
+      window.removeEventListener('hashchange', checkAdminRoute);
+      window.removeEventListener('popstate', checkAdminRoute);
+    };
   }, []);
 
   // Sync state with LocalStorage
