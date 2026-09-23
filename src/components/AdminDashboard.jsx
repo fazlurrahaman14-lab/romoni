@@ -68,7 +68,7 @@ export const AdminDashboard = () => {
   // Order Details Modal state
   const [selectedOrderReceipt, setSelectedOrderReceipt] = useState(null);
 
-  // Form State for Add / Edit Product Modal with bi-directional discount calculation
+  // Form State for Add / Edit Product Modal with bi-directional discount calculation & multi-image gallery
   const [formData, setFormData] = useState({
     title: '',
     collection: 'Unstitched Luxury Lawn',
@@ -81,6 +81,11 @@ export const AdminDashboard = () => {
     pieces: '3 Piece Suit',
     image: '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
     hoverImage: '/assets/products/hero_banner_winter_1790107081859.png',
+    images: [
+      '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
+      '/assets/products/hero_banner_winter_1790107081859.png'
+    ],
+    urlInput: '',
     description: '',
     inStock: true
   });
@@ -106,6 +111,10 @@ export const AdminDashboard = () => {
   // Open Add Product Modal
   const handleOpenAddModal = () => {
     setEditingProduct(null);
+    const defaultImgs = [
+      '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
+      '/assets/products/hero_banner_winter_1790107081859.png'
+    ];
     setFormData({
       title: '',
       collection: 'Unstitched Luxury Lawn',
@@ -116,8 +125,10 @@ export const AdminDashboard = () => {
       badge: '-13% OFF',
       fabric: '100% Superfine Printed Lawn',
       pieces: '3 Piece Suit',
-      image: '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
-      hoverImage: '/assets/products/hero_banner_winter_1790107081859.png',
+      image: defaultImgs[0],
+      hoverImage: defaultImgs[1],
+      images: defaultImgs,
+      urlInput: '',
       description: 'Handcrafted premium ladies attire featuring intricate embroidery.',
       inStock: true
     });
@@ -131,6 +142,10 @@ export const AdminDashboard = () => {
     const curr = Number(product.priceBDT || product.pricePKR || orig);
     const disc = orig > curr ? Math.round(((orig - curr) / orig) * 100) : 0;
 
+    const prodImages = (product.images && product.images.length > 0)
+      ? product.images
+      : [product.image, product.hoverImage].filter(Boolean);
+
     setFormData({
       title: product.title || '',
       collection: product.collection || 'Unstitched Luxury Lawn',
@@ -141,8 +156,10 @@ export const AdminDashboard = () => {
       badge: product.badge || (disc > 0 ? `-${disc}% OFF` : 'New Arrival'),
       fabric: product.fabric || '',
       pieces: product.pieces || '3 Piece Suit',
-      image: product.image || '',
-      hoverImage: product.hoverImage || product.image || '',
+      image: prodImages[0] || product.image || '',
+      hoverImage: prodImages[1] || product.hoverImage || prodImages[0] || '',
+      images: prodImages.length > 0 ? prodImages : ['/assets/products/ethnic_embroidered_lawn_1790107214388.png'],
+      urlInput: '',
       description: product.description || '',
       inStock: product.inStock !== false
     });
@@ -197,26 +214,80 @@ export const AdminDashboard = () => {
     }));
   };
 
-  // Handle Direct File Upload from Computer / Mobile Camera
-  const handleImageFileUpload = (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
+  // Handle Multiple File Upload from Device Gallery / PC
+  const handleMultipleImageFileUpload = (e) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    if (files.length === 0) return;
 
-    if (file.size > 8 * 1024 * 1024) {
-      alert('Image file size is too large. Please select an image under 8MB.');
-      return;
-    }
+    files.forEach((file) => {
+      if (file.size > 10 * 1024 * 1024) {
+        alert(`File ${file.name} is over 10MB limit.`);
+        return;
+      }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64Data = event.target.result;
-      setFormData((prev) => ({
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Data = event.target.result;
+        setFormData((prev) => {
+          const currentList = prev.images || [];
+          const updatedList = [...currentList, base64Data];
+          return {
+            ...prev,
+            images: updatedList,
+            image: updatedList[0] || prev.image,
+            hoverImage: updatedList[1] || updatedList[0] || prev.hoverImage
+          };
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Add Image via Direct Web Link
+  const handleAddUrlImage = (e) => {
+    if (e) e.preventDefault();
+    if (!formData.urlInput || !formData.urlInput.trim()) return;
+    const url = formData.urlInput.trim();
+    setFormData((prev) => {
+      const currentList = prev.images || [];
+      const updatedList = [...currentList, url];
+      return {
         ...prev,
-        image: base64Data,
-        hoverImage: base64Data
-      }));
-    };
-    reader.readAsDataURL(file);
+        images: updatedList,
+        image: updatedList[0] || prev.image,
+        hoverImage: updatedList[1] || updatedList[0] || prev.hoverImage,
+        urlInput: ''
+      };
+    });
+  };
+
+  // Remove single image from product gallery
+  const handleRemoveGalleryImage = (indexToRemove) => {
+    setFormData((prev) => {
+      const updatedList = prev.images.filter((_, i) => i !== indexToRemove);
+      return {
+        ...prev,
+        images: updatedList,
+        image: updatedList[0] || '',
+        hoverImage: updatedList[1] || updatedList[0] || ''
+      };
+    });
+  };
+
+  // Set selected gallery image as Main Featured photo (index 0)
+  const handleSetMainGalleryImage = (indexToMain) => {
+    setFormData((prev) => {
+      if (indexToMain === 0) return prev;
+      const target = prev.images[indexToMain];
+      const rest = prev.images.filter((_, i) => i !== indexToMain);
+      const updatedList = [target, ...rest];
+      return {
+        ...prev,
+        images: updatedList,
+        image: updatedList[0],
+        hoverImage: updatedList[1] || updatedList[0]
+      };
+    });
   };
 
   // Save Product (Add or Update)
@@ -227,8 +298,15 @@ export const AdminDashboard = () => {
       return;
     }
 
+    const finalImages = (formData.images && formData.images.length > 0)
+      ? formData.images
+      : [formData.image, formData.hoverImage].filter(Boolean);
+
     const payload = {
       ...formData,
+      images: finalImages,
+      image: finalImages[0] || formData.image,
+      hoverImage: finalImages[1] || finalImages[0] || formData.hoverImage,
       priceBDT: Number(formData.priceBDT),
       originalPriceBDT: Number(formData.originalPriceBDT || formData.priceBDT)
     };
@@ -486,7 +564,7 @@ export const AdminDashboard = () => {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button
                     onClick={resetProductsToDefault}
-                    title="Reset to default 6 demo suits"
+                    title="Reset to default demo suits"
                     style={{
                       padding: '0.45rem 0.85rem',
                       fontSize: '0.78rem',
@@ -790,17 +868,25 @@ export const AdminDashboard = () => {
                           const prices = getProductPrices(p);
                           const currentP = p.priceBDT || p.pricePKR || 0;
                           const origP = p.originalPriceBDT || p.originalPricePKR || currentP;
+                          const imgCount = (p.images && p.images.length > 0) ? p.images.length : (p.hoverImage ? 2 : 1);
 
                           return (
                             <tr key={p.id} style={{ borderBottom: '1px solid var(--color-border)' }}>
                               {/* Product Thumbnail & Title */}
                               <td style={{ padding: '0.85rem 1rem' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                  <img
-                                    src={p.image}
-                                    alt={p.title}
-                                    style={{ width: '44px', height: '54px', objectFit: 'cover', borderRadius: 'var(--radius-sm)', border: '1px solid #e2e8f0' }}
-                                  />
+                                  <div style={{ position: 'relative' }}>
+                                    <img
+                                      src={p.image}
+                                      alt={p.title}
+                                      style={{ width: '44px', height: '54px', objectFit: 'cover', borderRadius: 'var(--radius-sm)', border: '1px solid #e2e8f0' }}
+                                    />
+                                    {imgCount > 1 && (
+                                      <span style={{ position: 'absolute', bottom: '-4px', right: '-4px', background: 'var(--color-gold-dark)', color: '#ffffff', fontSize: '0.6rem', fontWeight: 800, padding: '0.1rem 0.35rem', borderRadius: 'var(--radius-full)' }}>
+                                        {imgCount}📷
+                                      </span>
+                                    )}
+                                  </div>
                                   <div>
                                     <div style={{ fontWeight: 600, color: 'var(--color-primary-dark)' }}>{p.title}</div>
                                     <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>SKU: {p.sku} • {p.pieces}</div>
@@ -888,7 +974,7 @@ export const AdminDashboard = () => {
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.4rem' }}>
                                   <button
                                     onClick={() => handleOpenEditModal(p)}
-                                    title="Edit Full Details & Discount"
+                                    title="Edit Full Details & Photos"
                                     style={{
                                       padding: '0.4rem 0.75rem',
                                       background: 'var(--color-gold-muted)',
@@ -1208,9 +1294,9 @@ export const AdminDashboard = () => {
             style={{
               background: '#ffffff',
               borderRadius: 'var(--radius-md)',
-              maxWidth: '850px',
+              maxWidth: '900px',
               width: '100%',
-              maxHeight: '90vh',
+              maxHeight: '92vh',
               overflowY: 'auto',
               boxShadow: 'var(--shadow-xl)',
               border: '1.5px solid var(--color-border-gold)'
@@ -1249,9 +1335,10 @@ export const AdminDashboard = () => {
                       style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
                     >
                       <option value="Unstitched Luxury Lawn">Unstitched Luxury Lawn</option>
-                      <option value="Luxury Pret Ready-to-Wear">Luxury Pret Ready-to-Wear</option>
-                      <option value="Chiffon & Velvet Couture">Chiffon & Velvet Couture</option>
-                      <option value="Festive Winter Collection">Festive Winter Collection</option>
+                      <option value="Ready To Wear Pret">Ready To Wear Pret</option>
+                      <option value="Winter Velvet Series">Winter Velvet Series</option>
+                      <option value="Festive & Bridal Couture">Festive & Bridal Couture</option>
+                      <option value="Silk & Organza Edition">Silk & Organza Edition</option>
                     </select>
                   </div>
 
@@ -1264,8 +1351,9 @@ export const AdminDashboard = () => {
                     >
                       <option value="unstitched-lawn">Unstitched Lawn</option>
                       <option value="luxury-pret">Luxury Pret</option>
-                      <option value="wedding-couture">Wedding Couture</option>
-                      <option value="chiffon-velvet">Chiffon & Velvet</option>
+                      <option value="velvet-series">Velvet Series</option>
+                      <option value="festive-couture">Festive Couture</option>
+                      <option value="silk-chiffon">Silk & Organza</option>
                     </select>
                   </div>
                 </div>
@@ -1317,38 +1405,72 @@ export const AdminDashboard = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Fabric Details</label>
-                    <input
-                      type="text"
-                      value={formData.fabric}
-                      onChange={(e) => setFormData({ ...formData, fabric: e.target.value })}
-                      placeholder="e.g. 100% Superfine Printed Lawn"
-                      style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
-                    />
-                  </div>
-
-                  <div>
                     <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Badge Ribbon Label</label>
                     <input
                       type="text"
                       value={formData.badge}
                       onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
-                      placeholder="e.g. -15% OFF, New Arrival, Bestseller"
+                      placeholder="e.g. -15% OFF, Bestseller, New Arrival"
+                      style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', marginTop: '1.2rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <input
+                        type="checkbox"
+                        id="inStockCheck"
+                        checked={formData.inStock}
+                        onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
+                      />
+                      <label htmlFor="inStockCheck" style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-primary-dark)', cursor: 'pointer' }}>
+                        In Stock & Ready for Dispatch
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Fabric & Pieces */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Fabric Details</label>
+                    <input
+                      type="text"
+                      value={formData.fabric}
+                      onChange={(e) => setFormData({ ...formData, fabric: e.target.value })}
+                      placeholder="Superfine Lawn / Micro Velvet 9000"
+                      style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Suit Type / Pieces</label>
+                    <input
+                      type="text"
+                      value={formData.pieces}
+                      onChange={(e) => setFormData({ ...formData, pieces: e.target.value })}
+                      placeholder="3 Piece Unstitched / Pret"
                       style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
                     />
                   </div>
                 </div>
 
-                {/* Image URL & File Upload Picker */}
-                <div style={{ marginBottom: '1rem', background: '#f8fafc', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--color-primary-dark)' }}>
-                    Product Image (Direct Photo Upload or Web Link) *
-                  </label>
+                {/* Multi-Photo Product Gallery Manager */}
+                <div style={{ marginBottom: '1rem', background: '#f8fafc', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1.5px solid var(--color-border-gold)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                    <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-primary-dark)', textTransform: 'uppercase' }}>
+                      📷 Product Photo Gallery ({formData.images?.length || 0} Photos)
+                    </label>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)', fontWeight: 600 }}>
+                      #1 Main Photo • #2 Hover Photo
+                    </span>
+                  </div>
 
-                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                  {/* Upload & Add Link Bar */}
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.85rem', flexWrap: 'wrap', alignItems: 'center' }}>
                     <label
                       style={{
-                        padding: '0.55rem 0.9rem',
+                        padding: '0.55rem 0.95rem',
                         background: 'var(--color-primary-dark)',
                         color: 'var(--color-gold)',
                         borderRadius: 'var(--radius-sm)',
@@ -1363,42 +1485,117 @@ export const AdminDashboard = () => {
                       }}
                     >
                       <Upload size={15} />
-                      <span>UPLOAD PHOTO FROM PHONE / PC</span>
+                      <span>UPLOAD MULTIPLE PHOTOS (PHONE / PC)</span>
                       <input
                         type="file"
+                        multiple
                         accept="image/*"
-                        onChange={handleImageFileUpload}
+                        onChange={handleMultipleImageFileUpload}
                         style={{ display: 'none' }}
                       />
                     </label>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>or paste image link below:</span>
+
+                    <div style={{ display: 'flex', gap: '0.3rem', flex: 1, minWidth: '240px' }}>
+                      <input
+                        type="text"
+                        value={formData.urlInput}
+                        onChange={(e) => setFormData({ ...formData, urlInput: e.target.value })}
+                        placeholder="Or paste web image URL (https://i.ibb.co/...)"
+                        style={{ flex: 1, padding: '0.55rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.8rem' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddUrlImage}
+                        style={{ padding: '0.55rem 0.85rem', background: 'var(--color-gold-muted)', border: '1px solid var(--color-border-gold)', color: 'var(--color-primary-dark)', fontWeight: 700, fontSize: '0.78rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer' }}
+                      >
+                        + Add Link
+                      </button>
+                    </div>
                   </div>
 
-                  <input
-                    type="text"
-                    required
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="https://i.ibb.co/... or select a file above"
-                    style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.82rem' }}
-                  />
+                  {/* Gallery Thumbnails List */}
+                  {formData.images && formData.images.length > 0 ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: '0.65rem' }}>
+                      {formData.images.map((imgUrl, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            background: '#ffffff',
+                            borderRadius: 'var(--radius-sm)',
+                            border: index === 0 ? '2px solid var(--color-gold-dark)' : '1px solid var(--color-border)',
+                            padding: '0.35rem',
+                            position: 'relative',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.3rem',
+                            boxShadow: 'var(--shadow-sm)'
+                          }}
+                        >
+                          <div style={{ height: '110px', width: '100%', borderRadius: '4px', overflow: 'hidden', background: '#f1f5f9', position: 'relative' }}>
+                            <img src={imgUrl} alt={`Photo ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <span
+                              style={{
+                                position: 'absolute',
+                                top: '4px',
+                                left: '4px',
+                                background: index === 0 ? 'var(--color-gold-dark)' : index === 1 ? '#0284c7' : 'rgba(0,0,0,0.65)',
+                                color: '#ffffff',
+                                fontSize: '0.6rem',
+                                fontWeight: 800,
+                                padding: '0.15rem 0.4rem',
+                                borderRadius: '3px'
+                              }}
+                            >
+                              {index === 0 ? '★ MAIN' : index === 1 ? 'HOVER' : `#${index + 1}`}
+                            </span>
+                          </div>
+
+                          <div style={{ display: 'flex', gap: '0.2rem', justifyContent: 'space-between' }}>
+                            {index !== 0 && (
+                              <button
+                                type="button"
+                                onClick={() => handleSetMainGalleryImage(index)}
+                                title="Make this the Primary Main Photo"
+                                style={{ fontSize: '0.65rem', padding: '0.2rem 0.35rem', background: '#fef3c7', border: '1px solid #fde047', color: '#b45309', borderRadius: '3px', cursor: 'pointer', fontWeight: 700, flex: 1 }}
+                              >
+                                Set Main
+                              </button>
+                            )}
+
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveGalleryImage(index)}
+                              title="Remove Photo"
+                              style={{ fontSize: '0.65rem', padding: '0.2rem 0.4rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#b91c1c', borderRadius: '3px', cursor: 'pointer', fontWeight: 700 }}
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ textAlign: 'center', padding: '1rem', background: '#ffffff', borderRadius: 'var(--radius-sm)', border: '1px dashed var(--color-border)', color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>
+                      No photos added yet. Select photos from your phone/PC or paste image URLs above.
+                    </div>
+                  )}
                 </div>
 
-                <div>
+                {/* Description */}
+                <div style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Product Description</label>
                   <textarea
-                    rows={3}
+                    rows="3"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Provide elegant description of embroidery, dupatta material, and stitching..."
-                    style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.85rem' }}
                   />
                 </div>
               </div>
 
-              {/* Live Preview Side Box */}
+              {/* LIVE PRODUCT CARD PREVIEW SIDEBAR */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--color-primary-dark)' }}>
                   Live Storefront Preview
                 </span>
                 <div
@@ -1412,7 +1609,7 @@ export const AdminDashboard = () => {
                 >
                   <div style={{ position: 'relative', height: '220px', overflow: 'hidden', background: '#f8fafc' }}>
                     <img
-                      src={formData.image}
+                      src={formData.images && formData.images[0] ? formData.images[0] : formData.image}
                       alt="Preview"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={(e) => { e.target.src = '/assets/products/ethnic_embroidered_lawn_1790107214388.png'; }}
@@ -1420,6 +1617,11 @@ export const AdminDashboard = () => {
                     {formData.badge && (
                       <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'var(--color-gold-dark)', color: '#ffffff', fontSize: '0.65rem', fontWeight: 800, padding: '0.2rem 0.5rem', borderRadius: '4px', textTransform: 'uppercase' }}>
                         {formData.badge}
+                      </span>
+                    )}
+                    {formData.images && formData.images.length > 1 && (
+                      <span style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(9, 26, 19, 0.75)', color: 'var(--color-gold)', fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.55rem', borderRadius: 'var(--radius-full)' }}>
+                        📷 {formData.images.length} Photos
                       </span>
                     )}
                   </div>
