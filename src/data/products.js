@@ -23,6 +23,11 @@ export const PRODUCTS = [
     reviewsCount: 38,
     image: '/assets/products/hero_banner_winter_1790107081859.png',
     hoverImage: '/assets/products/luxury_pret_plum_1790107251980.png',
+    images: [
+      '/assets/products/hero_banner_winter_1790107081859.png',
+      '/assets/products/luxury_pret_plum_1790107251980.png',
+      '/assets/products/ethnic_embroidered_lawn_1790107214388.png'
+    ],
     description: 'Exquisite deep emerald green micro-velvet shirt embellished with intricate gold zari tilla embroidery, paired with a matching embroidered velvet dupatta and silk trousers.',
     fabric: 'Micro Velvet 9000 shirt & dupatta, Raw Silk trousers',
     pieces: '3 Piece Full Suit',
@@ -48,6 +53,11 @@ export const PRODUCTS = [
     reviewsCount: 24,
     image: '/assets/products/coco_prints_vol4_1790107095197.png',
     hoverImage: '/assets/products/hero_banner_winter_1790107081859.png',
+    images: [
+      '/assets/products/coco_prints_vol4_1790107095197.png',
+      '/assets/products/hero_banner_winter_1790107081859.png',
+      '/assets/products/wedding_couture_1790107234257.png'
+    ],
     description: 'Soft blush pink digital floral lawn shirt featuring organza hand-embroidery around neckline and border, coupled with printed chiffon dupatta and tailored cambric pants.',
     fabric: '100% Superfine Printed Lawn, Organza Lace, Printed Chiffon',
     pieces: '3 Piece Suit',
@@ -73,6 +83,11 @@ export const PRODUCTS = [
     reviewsCount: 42,
     image: '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
     hoverImage: '/assets/products/wedding_couture_1790107234257.png',
+    images: [
+      '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
+      '/assets/products/wedding_couture_1790107234257.png',
+      '/assets/products/coco_prints_vol4_1790107095197.png'
+    ],
     description: 'Royal maroon heavy embroidered unstitched lawn shirt crafted with metallic golden tilla work, featuring an embroidered net dupatta and cotton trousers.',
     fabric: 'Luxury Embroidered Lawn, Net Dupatta, Dyed Cotton Trousers',
     pieces: '3 Piece Unstitched',
@@ -98,6 +113,11 @@ export const PRODUCTS = [
     reviewsCount: 19,
     image: '/assets/products/wedding_couture_1790107234257.png',
     hoverImage: '/assets/products/hero_banner_winter_1790107081859.png',
+    images: [
+      '/assets/products/wedding_couture_1790107234257.png',
+      '/assets/products/hero_banner_winter_1790107081859.png',
+      '/assets/products/luxury_pret_plum_1790107251980.png'
+    ],
     description: 'Handcrafted champagne gold bridal gown encrusted with dabka, nakshi, cut-dana, and Swarovski crystals. Custom tailored by master artisans.',
     fabric: 'Pure Net & Tissue organza with handwork embroidery',
     pieces: '3 Piece Couture Ensemble',
@@ -123,6 +143,11 @@ export const PRODUCTS = [
     reviewsCount: 15,
     image: '/assets/products/luxury_pret_plum_1790107251980.png',
     hoverImage: '/assets/products/coco_prints_vol4_1790107095197.png',
+    images: [
+      '/assets/products/luxury_pret_plum_1790107251980.png',
+      '/assets/products/coco_prints_vol4_1790107095197.png',
+      '/assets/products/ethnic_embroidered_lawn_1790107214388.png'
+    ],
     description: 'Regal plum raw silk straight tunic accented with antique gold tilla threadwork around neck and sleeves, matched with detailed cigarette pants.',
     fabric: 'Raw Silk shirt & straight pants',
     pieces: '2 Piece Pret Suit',
@@ -147,6 +172,11 @@ export const PRODUCTS = [
     reviewsCount: 29,
     image: '/assets/products/hero_banner_winter_1790107081859.png',
     hoverImage: '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
+    images: [
+      '/assets/products/hero_banner_winter_1790107081859.png',
+      '/assets/products/ethnic_embroidered_lawn_1790107214388.png',
+      '/assets/products/wedding_couture_1790107234257.png'
+    ],
     description: 'Deep forest green digitally printed lawn shirt with embroidered organza border, styled with printed silk dupatta.',
     fabric: 'Superfine Printed Lawn & Silk Dupatta',
     pieces: '3 Piece Unstitched',
