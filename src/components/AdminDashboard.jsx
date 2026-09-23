@@ -26,7 +26,8 @@ import {
   FileText,
   Clock,
   Sparkles,
-  Printer
+  Printer,
+  Upload
 } from 'lucide-react';
 import { CATEGORIES } from '../data/products';
 
@@ -194,6 +195,28 @@ export const AdminDashboard = () => {
       discountPercent: disc,
       badge: disc > 0 ? `-${disc}% OFF` : prev.badge
     }));
+  };
+
+  // Handle Direct File Upload from Computer / Mobile Camera
+  const handleImageFileUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Image file size is too large. Please select an image under 8MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64Data = event.target.result;
+      setFormData((prev) => ({
+        ...prev,
+        image: base64Data,
+        hoverImage: base64Data
+      }));
+    };
+    reader.readAsDataURL(file);
   };
 
   // Save Product (Add or Update)
@@ -939,14 +962,14 @@ export const AdminDashboard = () => {
                       ))}
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', padding: '0.4rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', minWidth: '240px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', width: '280px' }}>
                       <Search size={16} style={{ color: 'var(--color-text-muted)', marginRight: '0.4rem' }} />
                       <input
                         type="text"
-                        placeholder="Search Customer or Order ID..."
+                        placeholder="Search order ID, name, phone..."
                         value={adminSearch}
                         onChange={(e) => setAdminSearch(e.target.value)}
-                        style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.82rem', width: '100%' }}
+                        style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.8rem', width: '100%' }}
                       />
                     </div>
                   </div>
@@ -955,21 +978,22 @@ export const AdminDashboard = () => {
                   <div style={{ background: '#ffffff', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', overflow: 'hidden' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
                       <thead>
-                        <tr style={{ background: 'var(--color-primary-dark)', color: '#ffffff', fontSize: '0.78rem', textTransform: 'uppercase' }}>
-                          <th style={{ padding: '0.85rem 1rem' }}>Order ID & Date</th>
-                          <th style={{ padding: '0.85rem 1rem' }}>Customer Details</th>
-                          <th style={{ padding: '0.85rem 1rem' }}>Items Ordered</th>
-                          <th style={{ padding: '0.85rem 1rem' }}>Payment Method</th>
+                        <tr style={{ background: 'var(--color-primary-dark)', color: '#ffffff', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <th style={{ padding: '0.85rem 1rem' }}>Order Details</th>
+                          <th style={{ padding: '0.85rem 1rem' }}>Customer Contact</th>
+                          <th style={{ padding: '0.85rem 1rem' }}>Suits Ordered</th>
+                          <th style={{ padding: '0.85rem 1rem' }}>Payment</th>
                           <th style={{ padding: '0.85rem 1rem' }}>Total Amount</th>
-                          <th style={{ padding: '0.85rem 1rem' }}>Fulfillment Status</th>
-                          <th style={{ padding: '0.85rem 1rem', textAlign: 'right' }}>Actions</th>
+                          <th style={{ padding: '0.85rem 1rem' }}>Status Control</th>
+                          <th style={{ padding: '0.85rem 1rem', textAlign: 'right' }}>Invoice</th>
                         </tr>
                       </thead>
                       <tbody>
                         {filteredOrders.length === 0 ? (
                           <tr>
-                            <td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
-                              No orders found matching filter criteria.
+                            <td colSpan={7} style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                              <ShoppingBag size={36} style={{ margin: '0 auto 0.5rem', opacity: 0.5 }} />
+                              <p>No customer orders match the current filter.</p>
                             </td>
                           </tr>
                         ) : (
@@ -979,29 +1003,28 @@ export const AdminDashboard = () => {
                                 <div style={{ fontWeight: 800, color: 'var(--color-primary-dark)' }}>{ord.id}</div>
                                 <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>{ord.date}</div>
                               </td>
-
                               <td style={{ padding: '0.85rem 1rem' }}>
-                                <div style={{ fontWeight: 700, color: 'var(--color-primary-dark)' }}>{ord.customerName}</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>📱 {ord.phone}</div>
-                                <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>📍 {ord.address}, {ord.city}</div>
+                                <div style={{ fontWeight: 700 }}>{ord.customerName}</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>{ord.phone}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>{ord.address}, {ord.city}</div>
                               </td>
-
                               <td style={{ padding: '0.85rem 1rem' }}>
-                                {ord.items?.map((it, idx) => (
-                                  <div key={idx} style={{ fontSize: '0.78rem', marginBottom: '2px' }}>
-                                    • <strong>{it.title}</strong> ({it.size || 'Unstitched'}) x{it.quantity}
-                                  </div>
-                                ))}
+                                <div style={{ fontSize: '0.78rem' }}>
+                                  {ord.items?.map((it, idx) => (
+                                    <div key={idx} style={{ marginBottom: '0.15rem' }}>
+                                      • <strong>{it.title}</strong> x{it.quantity} <span style={{ color: 'var(--color-text-muted)' }}>({it.size})</span>
+                                    </div>
+                                  ))}
+                                </div>
                               </td>
-
-                              <td style={{ padding: '0.85rem 1rem', fontWeight: 700, color: '#047857' }}>
-                                {ord.paymentMethod}
+                              <td style={{ padding: '0.85rem 1rem' }}>
+                                <span style={{ padding: '0.2rem 0.55rem', borderRadius: 'var(--radius-sm)', background: '#ecfdf5', color: '#047857', fontWeight: 700, fontSize: '0.75rem', display: 'inline-block' }}>
+                                  {ord.paymentMethod}
+                                </span>
                               </td>
-
-                              <td style={{ padding: '0.85rem 1rem', fontWeight: 800, color: 'var(--color-primary-dark)', fontSize: '0.95rem' }}>
+                              <td style={{ padding: '0.85rem 1rem', fontWeight: 800, fontSize: '0.95rem', color: 'var(--color-primary-dark)' }}>
                                 {formatPrice(ord.totalAmount)}
                               </td>
-
                               <td style={{ padding: '0.85rem 1rem' }}>
                                 <select
                                   value={ord.status}
@@ -1009,11 +1032,12 @@ export const AdminDashboard = () => {
                                   style={{
                                     padding: '0.35rem 0.6rem',
                                     borderRadius: 'var(--radius-sm)',
-                                    border: '1px solid var(--color-border-gold)',
+                                    border: '1px solid var(--color-border)',
                                     fontSize: '0.78rem',
                                     fontWeight: 700,
-                                    background: ord.status === 'Completed' ? '#dcfce7' : ord.status === 'Processing' ? '#dbeafe' : '#fef3c7',
-                                    color: ord.status === 'Completed' ? '#15803d' : ord.status === 'Processing' ? '#1e40af' : '#b45309'
+                                    background: ord.status === 'Completed' ? '#dcfce7' : ord.status === 'Processing' ? '#dbeafe' : ord.status === 'Cancelled' ? '#fee2e2' : '#fef3c7',
+                                    color: ord.status === 'Completed' ? '#15803d' : ord.status === 'Processing' ? '#1e40af' : ord.status === 'Cancelled' ? '#b91c1c' : '#b45309',
+                                    cursor: 'pointer'
                                   }}
                                 >
                                   <option value="Pending">Pending</option>
@@ -1022,46 +1046,25 @@ export const AdminDashboard = () => {
                                   <option value="Cancelled">Cancelled</option>
                                 </select>
                               </td>
-
                               <td style={{ padding: '0.85rem 1rem', textAlign: 'right' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.4rem' }}>
-                                  <a
-                                    href={`https://wa.me/${ord.phone?.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(
-                                      ord.customerName || ''
-                                    )},%20this%20is%20Romoni%20Mart%20regarding%20your%20Order%20${ord.id}.`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    style={{
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      gap: '0.3rem',
-                                      padding: '0.4rem 0.75rem',
-                                      background: '#25D366',
-                                      color: '#ffffff',
-                                      borderRadius: 'var(--radius-sm)',
-                                      fontSize: '0.75rem',
-                                      fontWeight: 700,
-                                      textDecoration: 'none'
-                                    }}
-                                  >
-                                    <MessageCircle size={14} />
-                                    <span>WhatsApp</span>
-                                  </a>
-
-                                  <button
-                                    onClick={() => setSelectedOrderReceipt(ord)}
-                                    title="View Receipt"
-                                    style={{
-                                      padding: '0.4rem 0.6rem',
-                                      background: '#f1f5f9',
-                                      border: '1px solid var(--color-border)',
-                                      borderRadius: 'var(--radius-sm)',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    <Printer size={15} color="var(--color-primary-dark)" />
-                                  </button>
-                                </div>
+                                <button
+                                  onClick={() => setSelectedOrderReceipt(ord)}
+                                  style={{
+                                    padding: '0.35rem 0.7rem',
+                                    background: '#ffffff',
+                                    border: '1px solid var(--color-border)',
+                                    borderRadius: 'var(--radius-sm)',
+                                    cursor: 'pointer',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 600,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.3rem'
+                                  }}
+                                >
+                                  <Eye size={13} />
+                                  <span>Receipt</span>
+                                </button>
                               </td>
                             </tr>
                           ))
@@ -1072,109 +1075,106 @@ export const AdminDashboard = () => {
                 </div>
               )}
 
-              {/* TAB 4: COUPONS & DISCOUNTS MANAGEMENT */}
+              {/* TAB 4: PROMO COUPONS MANAGEMENT */}
               {activeTab === 'coupons' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem' }}>
-                  {/* Create New Coupon Form */}
-                  <div style={{ background: '#ffffff', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', height: 'fit-content' }}>
-                    <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--color-primary-dark)' }}>
-                      Create Promo Coupon
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {/* Create New Coupon Bar */}
+                  <div style={{ background: '#ffffff', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+                    <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', color: 'var(--color-primary-dark)', marginBottom: '1rem' }}>
+                      Create New Discount Promo Voucher
                     </h3>
-                    <form onSubmit={handleCreateCoupon}>
-                      <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Coupon Code (Uppercase)</label>
+                    <form onSubmit={handleCreateCoupon} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'end' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.3rem', textTransform: 'uppercase' }}>Coupon Code *</label>
                         <input
                           type="text"
+                          required
                           placeholder="e.g. EID2026"
                           value={newCouponCode}
                           onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
-                          required
                           style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontWeight: 700 }}
                         />
                       </div>
 
-                      <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Discount Percentage (%)</label>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.3rem', textTransform: 'uppercase' }}>Discount Percentage (% OFF) *</label>
                         <input
                           type="number"
-                          placeholder="e.g. 15"
-                          value={newCouponPercent}
-                          onChange={(e) => setNewCouponPercent(e.target.value)}
                           required
                           min="1"
                           max="90"
+                          placeholder="e.g. 15"
+                          value={newCouponPercent}
+                          onChange={(e) => setNewCouponPercent(e.target.value)}
                           style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
                         />
                       </div>
 
-                      <div style={{ marginBottom: '1.25rem' }}>
-                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Description / Note</label>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.3rem', textTransform: 'uppercase' }}>Description Note</label>
                         <input
                           type="text"
-                          placeholder="e.g. Special 15% discount code"
+                          placeholder="e.g. Festive Special Offer"
                           value={newCouponDesc}
                           onChange={(e) => setNewCouponDesc(e.target.value)}
                           style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
                         />
                       </div>
 
-                      <button className="btn-primary" type="submit" style={{ width: '100%' }}>
+                      <button className="btn-primary" type="submit" style={{ height: '42px', gap: '0.4rem' }}>
                         <Plus size={16} />
-                        <span>CREATE PROMO CODE</span>
+                        <span>CREATE COUPON</span>
                       </button>
                     </form>
                   </div>
 
-                  {/* Coupon List */}
+                  {/* Active Coupons Table */}
                   <div style={{ background: '#ffffff', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', overflow: 'hidden' }}>
-                    <div style={{ padding: '1rem 1.25rem', background: 'var(--color-primary-dark)', color: '#ffffff', fontWeight: 700, fontSize: '0.9rem' }}>
-                      Active Coupon Codes ({coupons.length})
-                    </div>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
                       <thead>
-                        <tr style={{ background: '#f8fafc', color: 'var(--color-text-muted)', fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                          <th style={{ padding: '0.75rem 1rem' }}>Code</th>
-                          <th style={{ padding: '0.75rem 1rem' }}>Discount</th>
-                          <th style={{ padding: '0.75rem 1rem' }}>Description</th>
-                          <th style={{ padding: '0.75rem 1rem' }}>Status</th>
-                          <th style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>Actions</th>
+                        <tr style={{ background: 'var(--color-primary-dark)', color: '#ffffff', fontSize: '0.78rem', textTransform: 'uppercase' }}>
+                          <th style={{ padding: '0.85rem 1rem' }}>Voucher Code</th>
+                          <th style={{ padding: '0.85rem 1rem' }}>Discount Percentage</th>
+                          <th style={{ padding: '0.85rem 1rem' }}>Description</th>
+                          <th style={{ padding: '0.85rem 1rem' }}>Status</th>
+                          <th style={{ padding: '0.85rem 1rem', textAlign: 'right' }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {coupons.map((c) => (
-                          <tr key={c.code} style={{ borderBottom: '1px solid var(--color-border)' }}>
-                            <td style={{ padding: '0.75rem 1rem', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
+                          <tr key={c.id} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                            <td style={{ padding: '0.85rem 1rem', fontWeight: 800, color: 'var(--color-gold-dark)', fontSize: '1rem', letterSpacing: '0.05em' }}>
                               {c.code}
                             </td>
-                            <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#e11d48' }}>
+                            <td style={{ padding: '0.85rem 1rem', fontWeight: 800, color: '#047857' }}>
                               {c.discountPercent}% OFF
                             </td>
-                            <td style={{ padding: '0.75rem 1rem', color: 'var(--color-text-muted)' }}>
-                              {c.description || 'General store coupon'}
+                            <td style={{ padding: '0.85rem 1rem', color: 'var(--color-text-secondary)' }}>
+                              {c.description || 'General store promotion'}
                             </td>
-                            <td style={{ padding: '0.75rem 1rem' }}>
+                            <td style={{ padding: '0.85rem 1rem' }}>
                               <button
-                                onClick={() => toggleCouponStatus(c.code)}
+                                onClick={() => toggleCouponStatus(c.id)}
                                 style={{
                                   border: 'none',
-                                  padding: '0.2rem 0.5rem',
+                                  padding: '0.25rem 0.6rem',
                                   borderRadius: 'var(--radius-full)',
                                   fontSize: '0.72rem',
                                   fontWeight: 700,
                                   cursor: 'pointer',
-                                  background: c.isActive ? '#dcfce7' : '#fee2e2',
-                                  color: c.isActive ? '#15803d' : '#b91c1c'
+                                  background: c.active ? '#dcfce7' : '#f1f5f9',
+                                  color: c.active ? '#15803d' : '#64748b'
                                 }}
                               >
-                                {c.isActive ? 'Active' : 'Disabled'}
+                                {c.active ? 'Active' : 'Disabled'}
                               </button>
                             </td>
-                            <td style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>
+                            <td style={{ padding: '0.85rem 1rem', textAlign: 'right' }}>
                               <button
-                                onClick={() => deleteCoupon(c.code)}
-                                style={{ background: 'none', border: 'none', color: '#b91c1c', cursor: 'pointer' }}
+                                onClick={() => deleteCoupon(c.id)}
+                                style={{ padding: '0.35rem 0.5rem', background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: 'var(--radius-sm)', cursor: 'pointer' }}
                               >
-                                <Trash2 size={16} />
+                                <Trash2 size={14} color="#b91c1c" />
                               </button>
                             </td>
                           </tr>
@@ -1189,13 +1189,14 @@ export const AdminDashboard = () => {
         )}
       </div>
 
-      {/* EDIT PRODUCT DETAILS & DISCOUNT MODAL */}
+      {/* ADD / EDIT PRODUCT MODAL */}
       {isProductModalOpen && (
         <div
           style={{
             position: 'fixed',
             inset: 0,
             background: 'rgba(0,0,0,0.7)',
+            backdropFilter: 'blur(4px)',
             zIndex: 10000,
             display: 'flex',
             alignItems: 'center',
@@ -1206,211 +1207,198 @@ export const AdminDashboard = () => {
           <div
             style={{
               background: '#ffffff',
-              borderRadius: 'var(--radius-lg)',
-              width: '100%',
+              borderRadius: 'var(--radius-md)',
               maxWidth: '850px',
-              padding: '1.5rem',
-              maxHeight: '92vh',
+              width: '100%',
+              maxHeight: '90vh',
               overflowY: 'auto',
               boxShadow: 'var(--shadow-xl)',
               border: '1.5px solid var(--color-border-gold)'
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Edit3 size={20} style={{ color: 'var(--color-gold-dark)' }} />
-                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: 'var(--color-primary-dark)' }}>
-                  {editingProduct ? 'Edit Product Details & Discount' : 'Add New Designer Suit'}
-                </h3>
-              </div>
-              <button onClick={() => setIsProductModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                <X size={22} />
+            <div style={{ background: 'var(--color-primary-dark)', color: '#ffffff', padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem' }}>
+                {editingProduct ? `Edit Product: ${editingProduct.title}` : 'Add New Luxury Outfit'}
+              </h3>
+              <button onClick={() => setIsProductModalOpen(false)} style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}>
+                <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleSaveProduct} style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr', gap: '1.5rem' }}>
-              <div>
-                {/* Product Title & Collection */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+            <form onSubmit={handleSaveProduct} style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 280px', gap: '1.5rem' }}>
+              {/* Form Fields */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Outfit Title / Model Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="e.g. Royal Emerald Embroidered Lawn"
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.3rem', color: 'var(--color-primary-dark)' }}>
-                      Product Title *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      placeholder="e.g. Mahparah - Crimson Zari Lawn"
-                      style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
-                    />
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Collection</label>
+                    <select
+                      value={formData.collection}
+                      onChange={(e) => setFormData({ ...formData, collection: e.target.value })}
+                      style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
+                    >
+                      <option value="Unstitched Luxury Lawn">Unstitched Luxury Lawn</option>
+                      <option value="Luxury Pret Ready-to-Wear">Luxury Pret Ready-to-Wear</option>
+                      <option value="Chiffon & Velvet Couture">Chiffon & Velvet Couture</option>
+                      <option value="Festive Winter Collection">Festive Winter Collection</option>
+                    </select>
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.3rem', color: 'var(--color-primary-dark)' }}>
-                      Collection Category *
-                    </label>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Category Filter</label>
                     <select
                       value={formData.category}
-                      onChange={(e) => {
-                        const selCat = CATEGORIES.find((c) => c.id === e.target.value);
-                        setFormData({
-                          ...formData,
-                          category: e.target.value,
-                          collection: selCat ? selCat.name : 'Unstitched Luxury Lawn'
-                        });
-                      }}
-                      style={{ width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
                     >
-                      {CATEGORIES.filter((c) => c.id !== 'all').map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </option>
-                      ))}
+                      <option value="unstitched-lawn">Unstitched Lawn</option>
+                      <option value="luxury-pret">Luxury Pret</option>
+                      <option value="wedding-couture">Wedding Couture</option>
+                      <option value="chiffon-velvet">Chiffon & Velvet</option>
                     </select>
                   </div>
                 </div>
 
-                {/* SPECIAL DISCOUNT & PRICING BOX */}
-                <div
-                  style={{
-                    background: '#fcf8f2',
-                    padding: '1rem',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1.5px solid var(--color-border-gold)',
-                    marginBottom: '1rem'
-                  }}
-                >
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--color-primary-dark)', display: 'flex', alignItems: 'center', gap: '0.3rem', marginBottom: '0.75rem' }}>
-                    <Tag size={15} style={{ color: 'var(--color-gold-dark)' }} />
-                    <span>Price & Discount Settings</span>
-                  </span>
+                {/* PRICING & DISCOUNT CALCULATOR BOX */}
+                <div style={{ background: '#fdfbf7', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border-gold)' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-primary-dark)', marginBottom: '0.75rem' }}>
+                    💰 PRICING & DISCOUNT CALCULATOR (BDT ৳)
+                  </label>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, marginBottom: '0.2rem', color: 'var(--color-text-secondary)' }}>
-                        Regular Price (৳)
-                      </label>
+                      <label style={{ display: 'block', fontSize: '0.72rem', color: 'var(--color-text-muted)', marginBottom: '0.2rem' }}>Regular Price (৳)</label>
                       <input
                         type="number"
-                        required
+                        placeholder="7500"
                         value={formData.originalPriceBDT}
                         onChange={(e) => handleRegularPriceChange(e.target.value)}
-                        placeholder="7500"
                         style={{ width: '100%', padding: '0.55rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontWeight: 600 }}
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, marginBottom: '0.2rem', color: '#e11d48' }}>
-                        Discount (%)
-                      </label>
+                      <label style={{ display: 'block', fontSize: '0.72rem', color: '#d97706', fontWeight: 700, marginBottom: '0.2rem' }}>Discount (% OFF)</label>
                       <input
                         type="number"
                         min="0"
                         max="99"
+                        placeholder="15"
                         value={formData.discountPercent}
                         onChange={(e) => handleDiscountPercentChange(e.target.value)}
-                        placeholder="15"
-                        style={{ width: '100%', padding: '0.55rem', borderRadius: 'var(--radius-sm)', border: '1.5px solid #e11d48', fontWeight: 800, color: '#e11d48' }}
+                        style={{ width: '100%', padding: '0.55rem', borderRadius: 'var(--radius-sm)', border: '1px solid #f59e0b', background: '#fffbeb', fontWeight: 800, color: '#b45309' }}
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, marginBottom: '0.2rem', color: 'var(--color-primary-dark)' }}>
-                        Selling Price (৳) *
-                      </label>
+                      <label style={{ display: 'block', fontSize: '0.72rem', color: '#047857', fontWeight: 700, marginBottom: '0.2rem' }}>Final Selling Price (৳) *</label>
                       <input
                         type="number"
                         required
+                        placeholder="6375"
                         value={formData.priceBDT}
                         onChange={(e) => handleSellingPriceChange(e.target.value)}
-                        placeholder="6500"
-                        style={{ width: '100%', padding: '0.55rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontWeight: 800, color: 'var(--color-primary-dark)' }}
+                        style={{ width: '100%', padding: '0.55rem', borderRadius: 'var(--radius-sm)', border: '1.5px solid #10b981', background: '#ecfdf5', fontWeight: 800, color: '#047857' }}
                       />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.75rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, marginBottom: '0.2rem', color: 'var(--color-text-secondary)' }}>
-                        Discount Badge Label
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.badge}
-                        onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
-                        placeholder="e.g. -15% OFF, BESTSELLER"
-                        style={{ width: '100%', padding: '0.55rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.8rem' }}
-                      />
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1.25rem' }}>
-                      <input
-                        type="checkbox"
-                        id="inStockCheck"
-                        checked={formData.inStock}
-                        onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
-                      />
-                      <label htmlFor="inStockCheck" style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-primary-dark)', cursor: 'pointer' }}>
-                        In Stock & Ready for Dispatch
-                      </label>
                     </div>
                   </div>
                 </div>
 
-                {/* Fabric & Pieces */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Fabric Details</label>
                     <input
                       type="text"
                       value={formData.fabric}
                       onChange={(e) => setFormData({ ...formData, fabric: e.target.value })}
-                      placeholder="Superfine Lawn / Micro Velvet 9000"
+                      placeholder="e.g. 100% Superfine Printed Lawn"
                       style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Suit Type / Pieces</label>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Badge Ribbon Label</label>
                     <input
                       type="text"
-                      value={formData.pieces}
-                      onChange={(e) => setFormData({ ...formData, pieces: e.target.value })}
-                      placeholder="3 Piece Unstitched / Pret"
+                      value={formData.badge}
+                      onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                      placeholder="e.g. -15% OFF, New Arrival, Bestseller"
                       style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
                     />
                   </div>
                 </div>
 
-                {/* Image URL */}
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Image URL / Asset Path *</label>
+                {/* Image URL & File Upload Picker */}
+                <div style={{ marginBottom: '1rem', background: '#f8fafc', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--color-primary-dark)' }}>
+                    Product Image (Direct Photo Upload or Web Link) *
+                  </label>
+
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <label
+                      style={{
+                        padding: '0.55rem 0.9rem',
+                        background: 'var(--color-primary-dark)',
+                        color: 'var(--color-gold)',
+                        borderRadius: 'var(--radius-sm)',
+                        fontSize: '0.78rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        border: '1px solid var(--color-border-gold)',
+                        boxShadow: 'var(--shadow-sm)'
+                      }}
+                    >
+                      <Upload size={15} />
+                      <span>UPLOAD PHOTO FROM PHONE / PC</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageFileUpload}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>or paste image link below:</span>
+                  </div>
+
                   <input
                     type="text"
                     required
                     value={formData.image}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://i.ibb.co/... or select a file above"
                     style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.82rem' }}
                   />
                 </div>
 
-                {/* Description */}
-                <div style={{ marginBottom: '1rem' }}>
+                <div>
                   <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>Product Description</label>
                   <textarea
-                    rows="3"
+                    rows={3}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', fontSize: '0.85rem' }}
+                    placeholder="Provide elegant description of embroidery, dupatta material, and stitching..."
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}
                   />
                 </div>
               </div>
 
-              {/* LIVE PRODUCT CARD PREVIEW SIDEBAR */}
+              {/* Live Preview Side Box */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <span style={{ fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--color-primary-dark)' }}>
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
                   Live Storefront Preview
                 </span>
                 <div
