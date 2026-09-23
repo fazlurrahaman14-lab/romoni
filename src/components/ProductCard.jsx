@@ -5,6 +5,7 @@ import { Heart, Eye, ShoppingBag } from 'lucide-react';
 export const ProductCard = ({ product }) => {
   const {
     formatPrice,
+    getProductPrices,
     wishlist,
     toggleWishlist,
     addToCart,
@@ -14,12 +15,15 @@ export const ProductCard = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
   const isWishlisted = wishlist.includes(product.id);
 
-  const priceVal = product.priceBDT || product.pricePKR || 0;
-  const originalPriceVal = product.originalPriceBDT || product.originalPricePKR || priceVal;
+  const { sellingPrice, originalPrice, discountPercent, hasDiscount } = getProductPrices(product);
 
-  const discountPercent = originalPriceVal > priceVal
-    ? Math.round(((originalPriceVal - priceVal) / originalPriceVal) * 100)
-    : 0;
+  const allImages = (product.images && product.images.length > 0)
+    ? product.images
+    : [product.image, product.hoverImage].filter(Boolean);
+
+  const primaryImage = allImages[0] || product.image;
+  const secondaryImage = allImages[1] || product.hoverImage || primaryImage;
+  const currentImage = isHovered && secondaryImage ? secondaryImage : primaryImage;
 
   return (
     <div
@@ -29,7 +33,7 @@ export const ProductCard = ({ product }) => {
     >
       <div className="card-image-wrapper">
         <img
-          src={isHovered && product.hoverImage ? product.hoverImage : product.image}
+          src={currentImage}
           alt={product.title}
           className="card-image"
           loading="lazy"
@@ -37,7 +41,31 @@ export const ProductCard = ({ product }) => {
 
         {product.badge && <span className="card-badge">{product.badge}</span>}
 
-        {discountPercent > 0 && (
+        {allImages.length > 1 && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: 'rgba(9, 26, 19, 0.75)',
+              backdropFilter: 'blur(4px)',
+              color: 'var(--color-gold)',
+              fontSize: '0.65rem',
+              fontWeight: 700,
+              padding: '0.2rem 0.55rem',
+              borderRadius: 'var(--radius-full)',
+              zIndex: 2,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              border: '1px solid var(--color-border-gold)'
+            }}
+          >
+            📷 {allImages.length} Photos
+          </span>
+        )}
+
+        {hasDiscount && discountPercent > 0 && (
           <span
             style={{
               position: 'absolute',
@@ -113,13 +141,13 @@ export const ProductCard = ({ product }) => {
         </h3>
 
         <p style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginBottom: '0.5rem' }}>
-          {product.pieces} • {product.fabric.split(',')[0]}
+          {product.pieces} • {product.fabric ? product.fabric.split(',')[0] : 'Luxury Fabric'}
         </p>
 
         <div className="card-price-row">
-          <span className="current-price">{formatPrice(priceVal)}</span>
-          {originalPriceVal > priceVal && (
-            <span className="original-price">{formatPrice(originalPriceVal)}</span>
+          <span className="current-price">{formatPrice(sellingPrice)}</span>
+          {hasDiscount && (
+            <span className="original-price">{formatPrice(originalPrice)}</span>
           )}
         </div>
 
@@ -136,3 +164,5 @@ export const ProductCard = ({ product }) => {
     </div>
   );
 };
+
+export default ProductCard;
